@@ -1,5 +1,8 @@
+ <div *ngIf="!loading && listaT3.length > 0">
+
+
 <div class="max-w-2xl mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-lg p-8"> 
+    <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500"> 
 <div class="max-w-md mx-auto">
 <p-table 
     [value]="listaT3"
@@ -10,7 +13,7 @@
     style="display: block; overflow-x: auto;"
 >
 
-    <!-- OBLIGATORIO: HEADER -->
+    <!-- HEADER -->
     <ng-template pTemplate="header">
         <tr>
             <th class="!text-center">Cat </th>
@@ -35,3 +38,5 @@
     </ng-template>
 
 </p-table>
+
+

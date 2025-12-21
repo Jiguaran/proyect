@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Database } from '../models/supabase';
 import { environment } from '../environments/environment';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { BehaviorSubject, Observable, from, throwError,of } from 'rxjs';
-import { map, tap, catchError,switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, from, throwError } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
 
 type Client = Database['public']['Tables']['t6_15221']['Row'];
 

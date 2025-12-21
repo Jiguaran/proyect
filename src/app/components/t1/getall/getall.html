@@ -1,61 +1,78 @@
-
-
-
-        
 <div class="max-w-4xl mx-auto p-6">
-  <div *ngFor="let fila of listaT1" class="bg-white rounded-lg shadow-lg p-8 mb-8">
-    
-    <div class="text-center mb-6">
-      <h2 class="text-xl font-bold text-gray-800">Encuesta: {{ fila.idencuesta }}</h2>
-      <p class="text-lg text-blue-600 font-medium">Cliente: {{ fila.cliente_n }}</p>
-    </div>
-
-    <hr class="my-6 border-gray-200">
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
-      <div class="p-2">
-        <p class="text-sm text-gray-500 uppercase tracking-wide">Inicio</p>
-        <p class="font-semibold">{{ fila.fecha_ini }}</p>
-      </div>
-      <div class="p-2">
-        <p class="text-sm text-gray-500 uppercase tracking-wide">Fin</p>
-        <p class="font-semibold">{{ fila.fecha_fin }}</p>
-      </div>
-      <div class="p-2">
-        <p class="text-sm text-gray-500 uppercase tracking-wide">Sincronización</p>
-        <p class="font-semibold">{{ fila.fecha_sinc }}</p>
-      </div>
-      <div class="p-2">
-        <p class="text-sm text-gray-500 uppercase tracking-wide">Sincronización Fin</p>
-        <p class="font-semibold">{{ fila.fecha_sinc_fin }}</p>
-      </div>
-    </div>
-
-    <hr class="my-6 border-gray-200">
-
-    <div class="flex flex-wrap justify-center gap-6 text-center">
-      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
-        <p class="text-xs text-gray-400">Nombre Propietario</p>
-        <p class="font-bold">{{ fila.maestro2 }}</p>
-      </div>
-      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
-        <p class="text-xs text-gray-400">Nombre Establecimiento</p>
-        <p class="font-bold">{{ fila.maestro3 }}</p>
-      </div>
-      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
-        <p class="text-xs text-gray-400">Dirección</p>
-        <p class="font-bold">{{ fila.maestro4 }}</p>
-      </div>
-      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
-        <p class="text-xs text-gray-400">Barrio</p>
-        <p class="font-bold">{{ fila.maestro5 }}</p>
-      </div>
-      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
-        <p class="text-xs text-gray-400">Teléfono</p>
-        <p class="font-bold">{{ fila.maestro6 }}</p>
-      </div>
-    </div>
-
+  
+  <div *ngIf="loading" class="flex flex-col items-center justify-center p-12 bg-white rounded-lg shadow-sm border border-gray-100">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mb-4"></div>
+    <p class="text-gray-500 font-medium">Consultando cabecera...</p>
   </div>
-</div>
 
+  <div *ngIf="!loading && listaT1.length > 0">
+    <div *ngFor="let fila of listaT1" class="bg-white rounded-lg shadow-lg p-8 mb-8 border-t-4 border-emerald-500">
+      
+      <div class="text-center mb-6">
+        <h2 class="text-xl font-bold text-gray-800 uppercase tracking-tight">Encuesta: {{ fila.idencuesta }}</h2>
+        <p class="text-lg text-emerald-600 font-medium mt-1">Cliente: {{ fila.cliente_n }}</p>
+      </div>
+
+      <hr class="my-6 border-gray-100">
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div class="p-2">
+          <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Inicio</p>
+          <p class="text-sm font-semibold text-gray-700">{{ fila.fecha_ini || '---' }}</p>
+        </div>
+        <div class="p-2">
+          <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Fin</p>
+          <p class="text-sm font-semibold text-gray-700">{{ fila.fecha_fin || '---' }}</p>
+        </div>
+        <div class="p-2">
+          <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Sinc. Inicio</p>
+          <p class="text-sm font-semibold text-gray-700">{{ fila.fecha_sinc || '---' }}</p>
+        </div>
+        <div class="p-2">
+          <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Sinc. Fin</p>
+          <p class="text-sm font-semibold text-gray-700">{{ fila.fecha_sinc_fin || '---' }}</p>
+        </div>
+      </div>
+
+      <hr class="my-6 border-gray-100">
+
+      <div class="flex flex-wrap justify-center gap-4 text-center">
+        <div class="bg-gray-50 px-4 py-3 rounded-xl border border-gray-100 min-w-[150px]">
+          <p class="text-[10px] text-gray-400 font-bold uppercase">Propietario</p>
+          <p class="text-sm font-bold text-gray-800">{{ fila.maestro2 || 'No registrado' }}</p>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 rounded-xl border border-gray-100 min-w-[150px]">
+          <p class="text-[10px] text-gray-400 font-bold uppercase">Establecimiento</p>
+          <p class="text-sm font-bold text-gray-800">{{ fila.maestro3 || 'No registrado' }}</p>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 rounded-xl border border-gray-100 min-w-[150px]">
+          <p class="text-[10px] text-gray-400 font-bold uppercase">Dirección</p>
+          <p class="text-sm font-bold text-gray-800">{{ fila.maestro4 }}</p>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 rounded-xl border border-gray-100 min-w-[150px]">
+          <p class="text-[10px] text-gray-400 font-bold uppercase">Barrio</p>
+          <p class="text-sm font-bold text-gray-800">{{ fila.maestro5 }}</p>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 rounded-xl border border-gray-100 min-w-[150px]">
+          <p class="text-[10px] text-gray-400 font-bold uppercase">Teléfono</p>
+          <p class="text-sm font-bold text-gray-800">{{ fila.maestro6 }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && listaT1.length === 0" 
+       class="bg-emerald-50 border-l-4 border-emerald-400 p-8 rounded-lg text-center shadow-sm">
+    <div class="flex flex-col items-center">
+      <i class="pi pi-info-circle text-emerald-400 text-4xl mb-3"></i>
+      <h3 class="text-emerald-800 font-bold text-lg">Aviso</h3>
+      <p class="text-emerald-600 mt-1 italic">
+        No hay datos de cabecera registrados aún para este ID. 
+        Comience a llenar el formulario para generar la información.
+      </p>
+    </div>
+  </div>
+
+  
+
+</div>

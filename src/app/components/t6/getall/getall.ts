@@ -17,6 +17,7 @@ type T6Row = Database['public']['Tables']['t6_15221']['Row'];
 
 @Component({
   selector: 'app-t6-getall',
+  standalone: true,
   imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule, TagModule],
   templateUrl: './getall.html',
   styleUrl: './getall.css',
@@ -66,6 +67,7 @@ export class Getall implements OnInit {
 
   cargarDatosT6(id: string, sufijo: string) {
     this.Loading = true;
+    this.listaT6 = [];
     this.t6Service.getDatoT6(id, sufijo).subscribe({
       next: (resultado: any) => {
         // Supabase devuelve un objeto. Los datos reales están en 'data'

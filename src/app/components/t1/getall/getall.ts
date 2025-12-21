@@ -34,7 +34,7 @@ export class Getall implements OnInit {
   loading: boolean = false;
 
   constructor(
-    private t1Service: T1, // Tu servicio
+    private t1Service: T1, // servicio
     private messageService: MessageService
   ) {}
 
@@ -55,16 +55,24 @@ export class Getall implements OnInit {
 cargarDatos(id: string, sufijo: string) {
   this.loading = true;
   
+  // PRIMERO: Limpiamos la lista a mostrar
+  this.listaT1 = []; 
+
   this.t1Service.getDatoPorTabla(id, sufijo).subscribe({
     next: (resultado: any) => {
-      // Supabase devuelve un objeto. Los datos reales están en 'data'
+      // 2. Solo si Supabase encontró el registro, lo agregamos
       if (resultado.data) {
-        this.listaT1 = [resultado.data]; // Lo guardas en tu array
+        // Como T1 es cabecera, guardamos el objeto único dentro del array
+        this.listaT1 = [resultado.data]; 
+      } else {
+        // Si resultado.data es null (encuesta nueva), listaT1 se queda vacía []
+        this.listaT1 = [];
       }
       this.loading = false;
     },
     error: (err) => {
       console.error('Error:', err);
+      this.listaT1 = []; // También limpiamos en caso de error
       this.loading = false;
     }
   });
@@ -72,7 +80,7 @@ cargarDatos(id: string, sufijo: string) {
 
   loadData(): void {
     this.loading = true;
-    
+    this.listaT1 = [];
     this.t1Service.getAllT1().subscribe({
       next: (data) => {
         this.listaT1 = data;
