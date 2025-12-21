@@ -1,0 +1,61 @@
+
+
+
+        
+<div class="max-w-4xl mx-auto p-6">
+  <div *ngFor="let fila of listaT1" class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    
+    <div class="text-center mb-6">
+      <h2 class="text-xl font-bold text-gray-800">Encuesta: {{ fila.idencuesta }}</h2>
+      <p class="text-lg text-blue-600 font-medium">Cliente: {{ fila.cliente_n }}</p>
+    </div>
+
+    <hr class="my-6 border-gray-200">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+      <div class="p-2">
+        <p class="text-sm text-gray-500 uppercase tracking-wide">Inicio</p>
+        <p class="font-semibold">{{ fila.fecha_ini }}</p>
+      </div>
+      <div class="p-2">
+        <p class="text-sm text-gray-500 uppercase tracking-wide">Fin</p>
+        <p class="font-semibold">{{ fila.fecha_fin }}</p>
+      </div>
+      <div class="p-2">
+        <p class="text-sm text-gray-500 uppercase tracking-wide">Sincronización</p>
+        <p class="font-semibold">{{ fila.fecha_sinc }}</p>
+      </div>
+      <div class="p-2">
+        <p class="text-sm text-gray-500 uppercase tracking-wide">Sincronización Fin</p>
+        <p class="font-semibold">{{ fila.fecha_sinc_fin }}</p>
+      </div>
+    </div>
+
+    <hr class="my-6 border-gray-200">
+
+    <div class="flex flex-wrap justify-center gap-6 text-center">
+      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
+        <p class="text-xs text-gray-400">M2</p>
+        <p class="font-bold">{{ fila.maestro2 }}</p>
+      </div>
+      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
+        <p class="text-xs text-gray-400">M3</p>
+        <p class="font-bold">{{ fila.maestro3 }}</p>
+      </div>
+      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
+        <p class="text-xs text-gray-400">M4</p>
+        <p class="font-bold">{{ fila.maestro4 }}</p>
+      </div>
+      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
+        <p class="text-xs text-gray-400">M5</p>
+        <p class="font-bold">{{ fila.maestro5 }}</p>
+      </div>
+      <div class="bg-gray-50 px-4 py-2 rounded-md shadow-sm">
+        <p class="text-xs text-gray-400">M6</p>
+        <p class="font-bold">{{ fila.maestro6 }}</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
