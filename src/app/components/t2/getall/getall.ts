@@ -13,6 +13,7 @@ import { T1 } from '../../../services/t1';
 
 // Alias para el tipo de fila,
 type T2Row = Database['public']['Tables']['t2_15221']['Row'];
+type T2WitNesp = T2Row & { nesp?: string };
 
 @Component({
   selector: 'app-t2-getall',
@@ -24,7 +25,7 @@ type T2Row = Database['public']['Tables']['t2_15221']['Row'];
   providers: [MessageService] 
 })
 export class Getall implements OnInit {
-  listaT2: T2Row[] = []; 
+  listaT2: T2WitNesp[] = []; 
   loading: boolean = false;
   datosT2: any = null;
 

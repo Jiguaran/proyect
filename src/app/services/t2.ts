@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Database } from '../models/supabase';
 import { environment } from '../environments/environment';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { BehaviorSubject, Observable, from, throwError } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, from, throwError,of } from 'rxjs';
+import { map, tap, catchError,switchMap } from 'rxjs/operators';
 
 type Client = Database['public']['Tables']['t2_15221']['Row'];
 // type ClientInsert = Database['public']['Tables']['t1_15221']['Insert']; // Para crear
@@ -46,12 +46,40 @@ export class T2 {
   }
 
 getDatoT2(id: string, sufijo: string): Observable<any> {
-  const nombreTabla = `t2_${sufijo}`;
+  const t2 = `t2_${sufijo}`;
+  const t6 = `t6_${sufijo}`;
+
   return from(
     this.supabase
-      .from(nombreTabla as any)
+      .from(t2 as any)
       .select('*')
       .eq('idencuesta', id.trim())
+  ).pipe(
+    switchMap(({ data: dataT2, error }: any) => {
+      if (error || !dataT2 || dataT2.length === 0) return of({ data: [] });
+
+      // Obtenemos los 'esp' únicos para buscar sus nombres en T6
+      const idsEsp = [...new Set(dataT2.map((item: any) => item.esp))];
+
+      return from(
+        this.supabase
+          .from(t6 as any)
+          .select('esp, nesp')
+          .in('esp', idsEsp)
+      ).pipe(
+        map(({ data: dataT6 }: any) => {
+          // Unimos los datos: a cada fila de T2 le inyectamos su 'nesp'
+          const datosCombinados = dataT2.map((row2: any) => {
+            const match = dataT6?.find((row6: any) => row6.esp === row2.esp);
+            return {
+              ...row2,
+              nesp: match ? match.nesp : 'No definido' // Nombre plano
+            };
+          });
+          return { data: datosCombinados };
+        })
+      );
+    })
   );
 }
 
