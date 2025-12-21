@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api'; // Dejamos MessageService para mostrar errores de carga
 import { ToastModule } from 'primeng/toast';
-
+import { TagModule } from 'primeng/tag';
 // Importar servicios
 import { T2 } from '../../../services/t2'; 
 import { Database } from '../../../models/supabase';
@@ -18,7 +18,7 @@ type T2WitNesp = T2Row & { nesp?: string };
 @Component({
   selector: 'app-t2-getall',
   standalone : true,
-  imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule], 
+  imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule, TagModule], 
   templateUrl: './getall.html',
   styleUrl: './getall.css',
   encapsulation: ViewEncapsulation.None,

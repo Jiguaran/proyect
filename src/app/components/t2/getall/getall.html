@@ -1,6 +1,8 @@
 
-<div class="max-w-4xl mx-auto p-6">
+<div class="max-w-2xl mx-auto p-6"> <!-- el max-width-2xl se modificó, antes era max-w-4xl para temas con el ancho -->
     <div class="bg-white rounded-lg shadow-lg p-8"> 
+<div class="max-w-md mx-auto ">
+
 
 <p-table 
     [value]="listaT2"
@@ -11,32 +13,20 @@
     scrollHeight="70vh"
 >
 
+        
     <!-- OBLIGATORIO: HEADER -->
     <ng-template pTemplate="header">
         <tr>
-            <th>ID encuesta</th>
-            <th>Id 1</th>
-            <th>Id 2</th>
             <th>Rta</th>
-            <th>Fcr</th>
             <th>Esp</th>
-            <th>Eval</th>
-            <th>Nombre Esp</th>
-            
         </tr>
     </ng-template>
 
     <!-- BODY -->
     <ng-template pTemplate="body" let-item>
         <tr>
-            <td>{{ item.idencuesta }}</td>
-            <td>{{item.id1}}</td>
-            <td>{{item.id2}}</td>
             <td>{{item.rta}}</td>
-            <td>{{item.fcr}}</td>
             <td>{{item.esp}}</td>
-            <td>{{item.eval}}</td>
-
         </tr>
     </ng-template>
 
