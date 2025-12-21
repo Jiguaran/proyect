@@ -1,6 +1,6 @@
-<div class="max-w-4xl mx-auto p-6">
+<div class="max-w-2xl mx-auto p-6">
     <div class="bg-white rounded-lg shadow-lg p-8"> 
-
+<div class="max-w-md mx-auto">
 <p-table 
     [value]="listaT3"
     [loading]="loading"
@@ -13,28 +13,24 @@
     <!-- OBLIGATORIO: HEADER -->
     <ng-template pTemplate="header">
         <tr>
-            <th>ID encuesta</th>
-            <th>Cat </th>
-            <th>Id 1</th>
-            <th>Id 2</th>
-            <th>Rta</th>
-            <th>Fcr</th>
-            <th>Esp</th>
-            <th>Eval</th>
+            <th class="!text-center">Cat </th>
+            <th class="!text-center">Nombre</th>
+            <th class="!text-center">Estado</th>
         </tr>
     </ng-template>
 
     <!-- BODY -->
     <ng-template pTemplate="body" let-item>
-        <tr>
-            <td>{{ item.idencuesta }}</td>
-            <td>{{ item.cat }}</td>
-            <td>{{ item.id1 }}</td>
-            <td>{{ item.id2 }}</td>
-            <td>{{ item.rta }}</td>
-            <td>{{ item.fcr }}</td>
-            <td>{{ item.esp }}</td>
-            <td>{{ item.eval }}</td>
+        <tr class="border-b">
+            <td class="p-2">{{ item.cat }}</td>
+            <td class="p-2">{{ item.ncat }}</td>
+            <td class="p-2 !text-center">
+                <p-tag 
+                    [severity]="item.rta == '1' ? 'success' : 'danger'" 
+                    [value]="item.rta == '1' ? 'Sí' : 'No'"
+                    [rounded]="true" 
+                />
+            </td>
         </tr>
     </ng-template>
 

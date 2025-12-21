@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api'; // Dejamos MessageService para mostrar errores de carga
 import { ToastModule } from 'primeng/toast';
+import { TagModule } from 'primeng/tag';
 
 //importamos los servicios
 import { T3 } from '../../../services/t3'; 
@@ -14,11 +15,12 @@ import { T1 } from '../../../services/t1';
 
 // Alias para el tipo de fila,
 type T3Row = Database['public']['Tables']['t3_15221']['Row'];
+type T3WitNcat = T3Row & { ncat?: string };
 
 @Component({
   selector: 'app-t3-getall',
   standalone: true,
-  imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule],
+  imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule, TagModule ],
   templateUrl: './getall.html',
   styleUrl: './getall.css',
   encapsulation: ViewEncapsulation.None,
@@ -26,7 +28,7 @@ type T3Row = Database['public']['Tables']['t3_15221']['Row'];
 })
 export class Getall implements OnInit {
 
-  listaT3: T3Row[] = []; 
+  listaT3: T3WitNcat[] = []; 
   loading: boolean = false;
   datosT3: any = null;
 

@@ -1,1 +1,43 @@
-<p>getall works!</p>
+<div class="max-w-2xl mx-auto p-6">
+  <div class="bg-white rounded-lg shadow-lg p-8">
+    <div class="max-w-md mx-auto">
+
+      <p-table 
+        [value]="listaT6" 
+        [loading]="Loading" 
+        [tableStyle]="{'min-width': '3rem'}"
+        style="display: block; overflow-x: auto;" 
+        scrollable="true" 
+        scrollHeight="70vh"
+      >
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="!text-center">ID</th>
+            <th class="!text-center">Esp</th>
+            <th class="!text-center">cat</th>
+            <th class="!text-center">Estado</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-item>
+          <tr class="border-b">
+            <td class="p-2">{{item.id1}}</td>
+            <td class="p-2">{{item.nesp}}</td>
+            <td class="p-2">{{item.ncat}}</td>
+            <td class="p-2 !text-center">
+                <p-tag 
+                    [severity]="item.rta == '1' ? 'success' : 'danger'" 
+                    [value]="item.rta == '1' ? 'Sí' : 'No'"
+                    [rounded]="true" 
+                />
+            </td>
+
+          </tr>
+        </ng-template>
+
+      </p-table>
+
+    </div>
+  </div>
+</div>

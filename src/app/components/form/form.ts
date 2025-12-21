@@ -35,6 +35,7 @@ export class Form {
 
     } else {
     this.miFormulario.markAllAsTouched();
+    
     }
   }
 
