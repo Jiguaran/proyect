@@ -5,6 +5,8 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable, from, throwError,of } from 'rxjs';
 import { map, tap, catchError,switchMap } from 'rxjs/operators';
 
+import { CATALOGO_ESP } from '../core/constants/encuestas.constants';  //importamos el modelo de los datos a comparar, arrays
+
 type Client = Database['public']['Tables']['t2_15221']['Row'];
 // type ClientInsert = Database['public']['Tables']['t1_15221']['Insert']; // Para crear
 // type ClientUpdate = Database['public']['Tables']['t1_15221']['Update']; // Para editar
@@ -46,39 +48,44 @@ export class T2 {
   }
 
 getDatoT2(id: string, sufijo: string): Observable<any> {
-  const t2 = `t2_${sufijo}`;
-  const t6 = `t6_${sufijo}`;
+  // 1. SEGURIDAD: Validar que el sufijo sea estrictamente numérico
+  const esSufijoSeguro = /^\d+$/.test(sufijo);
 
+  if (!esSufijoSeguro) {
+    console.error('Sufijo inválido detectado');
+    return of({ data: [], error: 'Sufijo no permitido' });
+  }
+
+  const nombreTabla = `t2_${sufijo}`;
+
+  // 2. CONSULTA ÚNICA: Solo vamos a la tabla T2
   return from(
     this.supabase
-      .from(t2 as any)
+      .from(nombreTabla as any)
       .select('*')
       .eq('idencuesta', id.trim())
   ).pipe(
-    switchMap(({ data: dataT2, error }: any) => {
-      if (error || !dataT2 || dataT2.length === 0) return of({ data: [] });
+    map(({ data, error }: any) => {
+      if (error) {
+        console.error('Error en Supabase:', error);
+        return { data: [], error };
+      }
 
-      // Obtenemos los 'esp' únicos para buscar sus nombres en T6
-      const idsEsp = [...new Set(dataT2.map((item: any) => item.esp))];
+      if (!data || data.length === 0) return { data: [] };
 
-      return from(
-        this.supabase
-          .from(t6 as any)
-          .select('esp, nesp')
-          .in('esp', idsEsp)
-      ).pipe(
-        map(({ data: dataT6 }: any) => {
-          // Unimos los datos: a cada fila de T2 le inyectamos su 'nesp'
-          const datosCombinados = dataT2.map((row2: any) => {
-            const match = dataT6?.find((row6: any) => row6.esp === row2.esp);
-            return {
-              ...row2,
-              nesp: match ? match.nesp : 'No definido' // Nombre plano
-            };
-          });
-          return { data: datosCombinados };
-        })
-      );
+      // 3. TRANSFORMACIÓN LOCAL: Inyectamos el 'nesp' desde el CATALOGO_ESP
+      const datosCombinados = data.map((row2: any) => {
+        // Buscamos el nombre en el catálogo usando el ID 'esp'
+        const nombreEsp = CATALOGO_ESP[row2.esp];
+
+        return {
+          ...row2,
+          // Si el nombre es un string vacío o no existe, ponemos 'No definido'
+          nesp: nombreEsp && nombreEsp !== '' ? nombreEsp : `ID ${row2.esp} no definido`
+        };
+      });
+
+      return { data: datosCombinados };
     })
   );
 }

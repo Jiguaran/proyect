@@ -1,0 +1,86 @@
+export interface EspMapping {
+  [key: number]: string;
+}
+
+export const CATALOGO_ESP: EspMapping = {
+  1: 'Góndola del Cliente',
+  2: 'Punta de Góndola',
+  3: 'Ristra, Balcón, Dispensadores',
+  4: 'Puesto de Pago Cliente',
+  5: 'Puesto de Pago Nutresa',
+  6: 'Exhibición Adicional Nutresa',
+  7: 'Exhibición Adicional Cliente',
+  8: 'Estantería del Cliente',
+  9: '',
+  10: 'Vitrina/Mostrador',
+  11: 'Exhibidor Jet/Festival(Buchona)',
+  12: 'Muebles Snackeros/Modulares',
+  13: 'Portafolio Innovación',
+  14: 'Portafolio Infaltable',
+  15: 'Nevera JET',
+  16: 'Portafolio F',
+  17: 'Gond/Estan No Infaltables',
+  18: 'Exhibiciones De Temporada',
+  19: 'Mundo Consciente/Saludable',
+  20: 'Bombonera/Lego/otros exhibidores',
+  21: 'Transformación',
+  22: 'Portafolio L',
+  23: 'Portafolio M',
+  24: 'Portafolio N',
+  25: 'Precios',
+  26: 'Portafolio Y'
+};
+
+
+export const CATALOGO_CAT: Record<number, string> = {
+  1: 'Café Instantáneo',
+  2: 'Café Molido',
+  3: 'Chocolates de Mesa',
+  4: 'Modificadores de Leche',
+  5: 'Pastas',
+  6: 'Alimentos Larga vida',
+  7: 'Barras de Cereal',
+  8: 'Galletas Dulces',
+  9: 'Galletas Saludables',
+  10: 'Galletas Saborizadas',
+  11: 'Galletas Saladas',
+  12: 'Golosinas de Chocolate',
+  13: 'Nueces',
+  14: 'Larga Vida Atún',
+  15: 'Champiñones',
+  16: 'Estándares Generales',
+  17: 'Repostería Industrial',
+  18: 'Repostería domestica',
+  19: 'Cereales Listos',
+  20: 'Avenas',
+  21: 'Snacks Saludables',
+  22: 'Nutrición Funcional',
+  23: 'Complementos Vitamínicos',
+  24: 'Bebidas Nutricionales',
+  25: 'Esparcibles',
+  26: 'Vegetales en Conserva',
+  27: 'Cápsulas',
+  28: 'Salsas de Cocina',
+  29: 'Aceites',
+  30: 'Vinagres',
+  31: 'Aceitunas',
+  32: 'Risotto',
+  33: 'Sopas y Cremas',
+  34: 'Harinas',
+  35: 'Salsas y marinadores',
+  36: '', // Espacio inexistente
+  37: 'Sales',
+  38: 'Condimentos',
+  39: 'Granos',
+  40: 'Aromáticas, Tés e Infusiones',
+  41: '', // Espacio inexistente
+  42: '', // Espacio inexistente
+  43: '', // Espacio inexistente
+  44: 'Bebidas',
+  45: 'Proteína Vegetal',
+  46: 'Innovaciones y otros',
+  47: 'Otras categorías Abarroteras/Snackeras',
+  48: 'Otros Alimentos Competencia',
+  49: 'Pasabocas',
+  50: 'Dulces Tipicos'
+};
