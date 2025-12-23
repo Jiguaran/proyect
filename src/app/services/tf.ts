@@ -26,35 +26,41 @@ export class Tf {
   
 getFotosAgrupadas(id: string, sufijo: string): Observable<any[]> {
   const nombreTabla = `tf_${sufijo}`;
+  const tablaRelacion = `t6_${sufijo}`;
   const URL_BASE = `https://storage.googleapis.com/nutresa-7f30b.appspot.com/${sufijo}/img/`;
 
   return from(
     this.supabase
       .from(nombreTabla as any)
-      .select('*')
+      .select(`*`) // Traemos todo de TF primero para asegurar que no de 0
       .eq('idencuesta', id.trim())
   ).pipe(
     map((response: any) => {
-      // IMPORTANTE: Supabase devuelve { data, error, count... }
-      // Si la consulta falló o no hay datos, devolvemos array vacío
       const rows = response.data || [];
       
-      // Agrupamos por PATH (para no repetir fotos)
+      // Agrupamos por IDP (Punto de contacto)
       const agrupado = rows.reduce((acc: any, item: any) => {
-        if (!acc[item.path]) {
-          acc[item.path] = {
-            urlCompleta: `${URL_BASE}${item.path}`,
-            espacio: item.esp,
-            categorias: []
+        const idPoc = item.idp;
+        
+        // Si el IDP es nulo o vacío, no lo saltamos si quieres ser estricto, 
+        // pero aquí lo agruparemos
+        if (!acc[idPoc]) {
+          acc[idPoc] = {
+            idp: idPoc,
+            espacio: item.esp, // Usamos el valor que ya viene en la tabla
+            fotos: []
           };
         }
-        if (!acc[item.path].categorias.includes(item.cat)) {
-          acc[item.path].categorias.push(item.cat);
-        }
+
+        acc[idPoc].fotos.push({
+          urlCompleta: `${URL_BASE}${item.path}`,
+          categoria: item.cat
+        });
+
         return acc;
       }, {});
 
-      return Object.values(agrupado); // Esto devuelve un any[]
+      return Object.values(agrupado);
     })
   );
 }

@@ -1,41 +1,47 @@
-
 <p-toast></p-toast>
 
-<div *ngIf="!Loading; else loadingTemplate" class="p-5">
-  <div class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5">
-    
-    <div *ngFor="let foto of listaFotos" 
-         class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md transition-hover hover:shadow-lg">
+<div *ngIf="!Loading; else loading" class="p-5">
+  
+  <div *ngIf="listaFotos.length === 0" class="text-center py-20 text-gray-400">
+    No se encontraron fotos para esta encuesta.
+  </div>
+
+  <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6">
+    <div *ngFor="let poc of listaFotos" 
+         class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">
       
-      <div class="w-full h-[200px] bg-gray-100">
-        <img [src]="foto.urlCompleta" 
-             class="w-full h-full object-cover"
-             alt="Foto encuesta" 
-             (error)="foto.urlCompleta = 'assets/no-image.png'">
-      </div>
-      
-      <div class="p-4">
-        <p class="text-sm text-gray-600">
-          <strong class="text-gray-800">Espacio:</strong> {{ foto.espacio }}
-        </p>
-        
-        <p class="text-sm font-semibold mt-3 mb-2 text-gray-700">Categorías:</p>
-        
-        <div class="flex flex-wrap gap-1.5">
-          <span *ngFor="let cat of foto.categorias" 
-                class="bg-emerald-500 text-white text-[11px] px-2.5 py-0.5 rounded-full font-medium">
-            Cat {{ cat }}
-          </span>
-        </div>
+      <div class="mb-4">
+        <h3 class="text-xl font-bold text-gray-800">POC: {{ poc.idp }}</h3>
+        <p class="text-sm text-emerald-600 font-medium">Espacio: {{ poc.espacio }}</p>
       </div>
 
+      <div class="bg-gray-50 rounded-lg p-3 mb-4 text-center">
+        <span class="text-xl font-black text-gray-700">{{ poc.fotos.length }}</span>
+        <p class="text-[10px] uppercase text-gray-400 font-bold">Fotos</p>
+      </div>
+      
+      <button (click)="abrirGaleria(poc)" 
+              class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold">
+        Mostrar Fotos
+      </button>
     </div>
   </div>
 </div>
 
-<ng-template #loadingTemplate>
-  <div class="flex flex-col items-center justify-center min-h-[300px] text-gray-500">
+<ng-template #loading>
+  <div class="flex flex-col items-center justify-center min-h-[300px]">
     <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
-    <p class="font-medium">Cargando fotos...</p>
+    <p>Cargando puntos de contacto...</p>
   </div>
 </ng-template>
+
+<p-dialog [(visible)]="displayGaleria" [header]="'Fotos POC: ' + pocSeleccionado?.idp" [modal]="true" [style]="{width: '50vw'}">
+  <div class="grid grid-cols-2 gap-4 mt-4" *ngIf="pocSeleccionado">
+      <div *ngFor="let foto of pocSeleccionado.fotos" class="border rounded-lg overflow-hidden shadow-sm">
+          <img [src]="foto.urlCompleta" class="w-full h-40 object-cover">
+          <div class="p-2 bg-gray-50 text-[10px] font-bold text-gray-500">
+              Categoría: {{ foto.categoria }}
+          </div>
+      </div>
+  </div>
+</p-dialog>
