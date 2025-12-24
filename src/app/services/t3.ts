@@ -5,7 +5,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable, from, throwError,of } from 'rxjs';
 import { map, tap, catchError,switchMap } from 'rxjs/operators';
 
-import { CATALOGO_CAT } from '../core/constants/encuestas.constants';  //importamos el modelo de los datos a comparar, arrays
+import { CATALOGO_CAT,CATALOGO_ESP } from '../core/constants/encuestas.constants';  //importamos el modelo de los datos a comparar, arrays
 
 type Client = Database['public']['Tables']['t3_15221']['Row'];
 // type ClientInsert = Database['public']['Tables']['t1_15221']['Insert']; // Para crear
@@ -74,15 +74,25 @@ getDatoT3(id: string, sufijo: string): Observable<any> {
 
       if (!data || data.length === 0) return { data: [] };
 
-      // 3. MAPEO CON CATALOGO_CAT
+      // 3. MAPEO CON CATALOGO_CAT Y CATALOGO_ESP
       const datosCombinados = data.map((row3: any) => {
-        // En T3 el campo suele ser 'cat' (basado en tu código original)
+        // Mapeo para Categoría
         const nombreCat = CATALOGO_CAT[row3.cat];
+        
+        // Mapeo para Especialidad (nesp)
+        const nombreEsp = CATALOGO_ESP[row3.esp];
 
         return {
           ...row3,
-          // Si el ID no existe o es un string vacío, manejamos el fallback
-          ncat: nombreCat && nombreCat !== '' ? nombreCat : `Cat. ${row3.cat} no definida`
+          // Validación y asignación de ncat
+          ncat: nombreCat && nombreCat !== '' 
+                ? nombreCat 
+                : `Cat. ${row3.cat} no definida`,
+          
+          // Validación y asignación de nesp
+          nesp: nombreEsp && nombreEsp !== '' 
+                ? nombreEsp 
+                : `Esp. ${row3.esp} no definida`
         };
       });
 
@@ -90,8 +100,6 @@ getDatoT3(id: string, sufijo: string): Observable<any> {
     })
   );
 }
-
-   
-
-
 }
+
+

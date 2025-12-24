@@ -41,6 +41,7 @@ export class T6 {
       catchError(err => throwError(() => err))
     );
   } 
+  
 getDatoT6(id: string, sufijo: string): Observable<any> {
   const esSufijoSeguro = /^\d+$/.test(sufijo);
 
@@ -66,11 +67,13 @@ getDatoT6(id: string, sufijo: string): Observable<any> {
         .filter((fila: any) => fila.id === fila.esp) // Regla de oro: id == esp
         .reduce((acc: any, fila: any) => {
           const idPoc = `${fila.id}-${fila.esp}`;
+          const poc  = `${fila.id}`;
 
           if (!acc[idPoc]) {
             acc[idPoc] = {
               ...fila,
-              idpoc: idPoc // Inyectamos el campo dinámico
+              
+              idpoc: poc // Inyectamos el campo dinámico, en este caso solo searáalguno de los dos, ya que es una igualdad, da lo mismo si es cualquiera.. si pongo poc sale 1-1
             };
           }
           // No sumamos nada, si hay repetidos se queda con el primero que encuentre

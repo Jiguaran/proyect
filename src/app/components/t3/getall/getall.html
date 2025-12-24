@@ -20,6 +20,7 @@
     <!-- HEADER -->
     <ng-template pTemplate="header">
         <tr>
+            <th class="!text-center">Espacio</th>
             <th class="!text-center">Cat </th>
             <th class="!text-center">Categoria</th>
             <th class="!text-center">Estado</th>
@@ -29,6 +30,7 @@
     <!-- BODY -->
     <ng-template pTemplate="body" let-item>
         <tr class="border-b">
+            <td class="p-2">{{ item.nesp }}</td>
             <td class="p-2">{{ item.cat }}</td>
             <td class="p-2">{{ item.ncat }}</td>
             <td class="p-2 !text-center">
