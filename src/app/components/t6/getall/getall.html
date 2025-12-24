@@ -1,46 +1,47 @@
- <div *ngIf="!Loading && listaT6.length > 0">
+
+<div *ngIf="!Loading && listaT6.length > 0" class="max-w-2xl mx-auto p-4">
 
 
-<div class="max-w-2xl mx-auto p-6">
-  <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500">
-    <div class="max-w-md mx-auto">
 
-      <p-table 
-        [value]="listaT6" 
-        [loading]="Loading" 
-        [tableStyle]="{'min-width': '3rem'}"
-        style="display: block; overflow-x: auto;" 
-        scrollable="true" 
-        scrollHeight="70vh"
-      >
+  <div *ngFor="let grupo of listaT6" class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500">
+    <h1 class="text-2xl font-bold text-center mb-6"> PUNTOS DE CONTACTO </h1>
 
-        <ng-template pTemplate="header">
-          <tr>
-            <th class="!text-center">ID POC</th>
-            <th class="!text-center">Esp</th>
-            <th class="!text-center">cat</th>
-            <th class="!text-center">Estado</th>
-          </tr>
-        </ng-template>
+    <div class="bg-gray-50 p-4 border-b border-gray-100">
+      
+      <h3 class="text-emerald-800 font-bold text-lg flex items-center">
+        
+        <i class="pi pi-tag mr-2"></i>
+        {{ grupo.titulo }}
+      </h3>
+    </div>
 
-        <ng-template pTemplate="body" let-item>
-          <tr class="border-b">
-            <td class="p-2">{{item.idpoc}}</td>
-            <td class="p-2">{{item.nesp}}</td>
-            <td class="p-2">{{item.ncat}}</td>
-            <td class="p-2 !text-center">
-                <p-tag 
-                    [severity]="item.rta == '1' ? 'success' : 'danger'" 
-                    [value]="item.rta == '1' ? 'Sí' : 'No'"
-                    [rounded]="true" 
-                />
-            </td>
+<div class="p-2">
+  <div *ngFor="let item of grupo.puntos" class="flex items-center p-3 hover:bg-slate-50 border-b last:border-0 border-gray-100">
+    
+    <div class="flex flex-col w-full">
+      
+      <span class="text-xs text-gray-400 font-mono text-left">
+        ID POC: {{ item.idpoc }}
+      </span>
 
-          </tr>
-        </ng-template>
+      <span class="text-xs text-gray-400 font-mono ml-[60%]">
+        Categorias:
+      </span>
 
-      </p-table>
+      <span class="text-gray-700 font-medium text-right w-full">
+        {{ item.ncat }}
+      </span>
 
     </div>
+
   </div>
 </div>
+    
+  </div>
+
+</div>
+
+<!-- <div *ngIf="!Loading && listaT6.length === 0" class="text-center p-8 text-gray-400">
+  <i class="pi pi-search text-4xl mb-2"></i>
+  <p>No se encontraron resultados para esta encuesta.</p>
+</div> -->

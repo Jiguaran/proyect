@@ -5,6 +5,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable, from, throwError,of } from 'rxjs';
 import { map, tap, catchError  } from 'rxjs/operators';
 
+import { CATALOGO_CAT,CATALOGO_ESP } from '../core/constants/encuestas.constants';  //importamos el modelo de los datos a comparar, arrays
 type Client = Database['public']['Tables']['t6_15221']['Row'];
 
 @Injectable({
@@ -44,10 +45,7 @@ export class T6 {
   
 getDatoT6(id: string, sufijo: string): Observable<any> {
   const esSufijoSeguro = /^\d+$/.test(sufijo);
-
-  if (!esSufijoSeguro) {
-    return of({ data: [], error: 'Sufijo no permitido' });
-  }
+  if (!esSufijoSeguro) return of({ data: [], error: 'Sufijo no permitido' });
 
   const nombreTabla = `t6_${sufijo}`;
 
@@ -61,26 +59,32 @@ getDatoT6(id: string, sufijo: string): Observable<any> {
       if (error) throw error;
       if (!data || data.length === 0) return { data: [] };
 
-      // 1. Filtrar primero: Solo donde id y esp son iguales
-      // 2. Agrupar para eliminar duplicados de IDPOC
-      const filtradoYAgrupado = data
-        .filter((fila: any) => fila.id === fila.esp) // Regla de oro: id == esp
-        .reduce((acc: any, fila: any) => {
-          const idPoc = `${fila.id}-${fila.esp}`;
-          const poc  = `${fila.id}`;
+      // Agrupamos por ESP para crear secciones
+      const agrupadoPorEsp = data.reduce((acc: any, fila: any) => {
+        // Obtenemos los nombres de los catálogos
+        const nombreEsp = CATALOGO_ESP[fila.esp] || `Esp. ${fila.esp}`;
+        const nombreCat = CATALOGO_CAT[fila.cat] || `Cat. ${fila.cat}`;
 
-          if (!acc[idPoc]) {
-            acc[idPoc] = {
-              ...fila,
-              
-              idpoc: poc // Inyectamos el campo dinámico, en este caso solo searáalguno de los dos, ya que es una igualdad, da lo mismo si es cualquiera.. si pongo poc sale 1-1
-            };
-          }
-          // No sumamos nada, si hay repetidos se queda con el primero que encuentre
-          return acc;
-        }, {});
+        // Si no existe el grupo de esta especialidad, lo creamos
+        if (!acc[nombreEsp]) {
+          acc[nombreEsp] = {
+            titulo: nombreEsp,
+            puntos: []
+          };
+        }
 
-      return { data: Object.values(filtradoYAgrupado) };
+        // Agregamos el registro procesado al grupo
+        acc[nombreEsp].puntos.push({
+          ...fila,
+          ncat: nombreCat,
+          idpoc: fila.id // Siguiendo tu lógica de que id = esp
+        });
+
+        return acc;
+      }, {});
+
+      // Convertimos el objeto en un array para el *ngFor
+      return { data: Object.values(agrupadoPorEsp) };
     })
   );
 }

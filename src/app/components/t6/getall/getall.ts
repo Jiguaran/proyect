@@ -26,7 +26,7 @@ type T6Row = Database['public']['Tables']['t6_15221']['Row'];
 })
 export class Getall implements OnInit {
   
-  listaT6: T6Row[] = []
+listaT6: any[] = []; 
   Loading: boolean = false;
   datosT6: any = null;
   
@@ -64,14 +64,17 @@ export class Getall implements OnInit {
       }
     });
   }
-
-  cargarDatosT6(id: string, sufijo: string) {
+cargarDatosT6(id: string, sufijo: string) {
     this.Loading = true;
     this.listaT6 = [];
     this.t6Service.getDatoT6(id, sufijo).subscribe({
       next: (resultado: any) => {
-        // Supabase devuelve un objeto. Los datos reales están en 'data'
+        // Ahora resultado.data trae la lista de objetos { titulo: '...', puntos: [...] }
         this.listaT6 = resultado.data || [];
+        this.Loading = false;
+      },
+      error: (err) => {
+        console.error(err);
         this.Loading = false;
       }
     });

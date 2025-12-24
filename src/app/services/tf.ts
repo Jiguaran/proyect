@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { Database } from '../models/supabase';
 import {environment } from '../environments/environment';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { BehaviorSubject,Observable, from, throwError } from 'rxjs';
+import { BehaviorSubject,Observable, from, throwError,of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 
+
+import { CATALOGO_CAT,CATALOGO_ESP } from '../core/constants/encuestas.constants';  //importamos el modelo de los datos a comparar, arrays
 
 type Client = Database['public']['Tables']['tf_15221']['Row'];
 
@@ -25,35 +27,42 @@ export class Tf {
   constructor() {}
   
 getFotosAgrupadas(id: string, sufijo: string): Observable<any[]> {
+  // 1. VALIDACIÓN DE SEGURIDAD (Agregar aquí)
+  const esSufijoSeguro = /^\d+$/.test(sufijo);
+  if (!esSufijoSeguro) {
+    console.warn('Sufijo no permitido para fotos:', sufijo);
+    return of([]); // Retorna un observable vacío inmediatamente
+  }
+
+  // 2. DEFINICIÓN DE VARIABLES
   const nombreTabla = `tf_${sufijo}`;
-  const tablaRelacion = `t6_${sufijo}`;
   const URL_BASE = `https://storage.googleapis.com/nutresa-7f30b.appspot.com/${sufijo}/img/`;
 
+  // 3. CONSULTA Y TRANSFORMACIÓN
   return from(
     this.supabase
       .from(nombreTabla as any)
-      .select(`*`) // Traemos todo de TF primero para asegurar que no de 0
+      .select(`*`)
       .eq('idencuesta', id.trim())
   ).pipe(
     map((response: any) => {
       const rows = response.data || [];
       
-      // Agrupamos por IDP (Punto de contacto)
       const agrupado = rows.reduce((acc: any, item: any) => {
         const idPoc = item.idp;
         
-        // Si el IDP es nulo o vacío, no lo saltamos si quieres ser estricto, 
-        // pero aquí lo agruparemos
         if (!acc[idPoc]) {
           acc[idPoc] = {
             idp: idPoc,
-            espacio: item.esp, // Usamos el valor que ya viene en la tabla
+            esp: item.esp,
+            nesp: CATALOGO_ESP[item.esp] || `Punto ${item.esp}`, 
             fotos: []
           };
         }
 
         acc[idPoc].fotos.push({
           urlCompleta: `${URL_BASE}${item.path}`,
+          ncat: CATALOGO_CAT[item.cat] || `Cat. ${item.cat}`,
           categoria: item.cat
         });
 
