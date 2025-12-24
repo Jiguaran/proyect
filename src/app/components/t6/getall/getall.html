@@ -1,47 +1,38 @@
-
 <div *ngIf="!Loading && listaT6.length > 0" class="max-w-2xl mx-auto p-4">
 
-
-
-  <div *ngFor="let grupo of listaT6" class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500">
-    <h1 class="text-2xl font-bold text-center mb-6"> PUNTOS DE CONTACTO </h1>
-
-    <div class="bg-gray-50 p-4 border-b border-gray-100">
-      
-      <h3 class="text-emerald-800 font-bold text-lg flex items-center">
-        
-        <i class="pi pi-tag mr-2"></i>
-        {{ grupo.titulo }}
-      </h3>
-    </div>
-
-<div class="p-2">
-  <div *ngFor="let item of grupo.puntos" class="flex items-center p-3 hover:bg-slate-50 border-b last:border-0 border-gray-100">
+  <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500">
     
-    <div class="flex flex-col w-full">
-      
-      <span class="text-xs text-gray-400 font-mono text-left">
-        ID POC: {{ item.idpoc }}
-      </span>
-
-      <span class="text-xs text-gray-400 font-mono ml-[60%]">
-        Categorias:
-      </span>
-
-      <span class="text-gray-700 font-medium text-right w-full">
-        {{ item.ncat }}
-      </span>
-
-    </div>
-
-  </div>
-</div>
+    <p class="text-xl font-bold text-gray-800 uppercase tracking-tight text-center">
+      PUNTOS DE CONTACTO
+    </p>
     
-  </div>
+    <hr class="mt-6 mb-8 border-gray-100">
 
-</div>
+    <div *ngFor="let grupo of listaT6; let last = last">
+      
+      <div class="bg-gray-50 p-4 border-b border-gray-100">
+        <h3 class=" font-bold text-lg text-emerald-600 flex items-center">
+          <i class="pi pi-tag mr-2"></i>
+          {{ grupo.titulo }} <th>:</th>
+        </h3> 
+      </div>
 
-<!-- <div *ngIf="!Loading && listaT6.length === 0" class="text-center p-8 text-gray-400">
-  <i class="pi pi-search text-4xl mb-2"></i>
-  <p>No se encontraron resultados para esta encuesta.</p>
-</div> -->
+      <div class="p-2">
+        <div *ngFor="let item of grupo.puntos" class="flex items-center p-3 hover:bg-slate-50 border-b last:border-0 border-gray-100">
+          <div class="flex flex-col w-full">
+            <span class="text-xs text-gray-400 font-mono text-left">
+              ID POC: {{ item.idpoc }}
+            </span>
+            <span class="text-xs text-gray-400 font-mono ml-[60%]">
+              Categorias:
+            </span>
+            <span class="text-gray-700 font-medium text-right w-full">
+              {{ item.ncat }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <hr *ngIf="!last" class="my-8 border-gray-100">
+
+    </div> </div> </div>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api'; 
 import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
-
+import { ImageModule } from 'primeng/image';
 
 import { Tf } from '../../../services/tf'; 
 import { T1 } from '../../../services/t1';
@@ -11,7 +11,7 @@ import { T1 } from '../../../services/t1';
 @Component({
   selector: 'app-tf-getall',
   standalone: true,
-  imports: [CommonModule, ToastModule, DialogModule], // Añade DialogModule aquí
+  imports: [CommonModule, ToastModule, DialogModule,ImageModule], // Añade DialogModule aquí
   templateUrl: './getall.html',
   styleUrl: './getall.css',
   encapsulation: ViewEncapsulation.None,
@@ -62,5 +62,15 @@ pocSeleccionado: any = null;
 abrirGaleria(poc: any) {
   this.pocSeleccionado = poc;
   this.displayGaleria = true;
+}
+
+contarFotosExistentes(fotos: any[]): number {
+  if (!fotos) return 0;
+  // Solo contamos las que el navegador confirmó que cargaron (existe === true)
+  return fotos.filter(f => f.existe === true).length;
+}
+
+verImagenFull(url: string) {
+  window.open(url, '_blank');
 }
 }

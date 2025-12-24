@@ -44,33 +44,48 @@ getFotosAgrupadas(id: string, sufijo: string): Observable<any[]> {
       .from(nombreTabla as any)
       .select(`*`)
       .eq('idencuesta', id.trim())
-  ).pipe(
-    map((response: any) => {
-      const rows = response.data || [];
-      
-      const agrupado = rows.reduce((acc: any, item: any) => {
-        const idPoc = item.idp;
-        
-        if (!acc[idPoc]) {
-          acc[idPoc] = {
-            idp: idPoc,
-            esp: item.esp,
-            nesp: CATALOGO_ESP[item.esp] || `Punto ${item.esp}`, 
-            fotos: []
-          };
-        }
+  ).pipe(map((response: any) => {
+  const rows = response.data || [];
+  
+  const agrupadoPorEsp = rows.reduce((acc: any, item: any) => {
+    const espKey = item.esp || '0';
+    const idPoc = item.idp || 'Sin ID';
 
-        acc[idPoc].fotos.push({
-          urlCompleta: `${URL_BASE}${item.path}`,
-          ncat: CATALOGO_CAT[item.cat] || `Cat. ${item.cat}`,
-          categoria: item.cat
-        });
+    // 1. Si no existe el Espacio, lo creamos
+    if (!acc[espKey]) {
+      acc[espKey] = {
+        nesp: CATALOGO_ESP[espKey] || `Espacio ${espKey}`,
+        espId: espKey,
+        puntos: {} // Usamos objeto para agrupar puntos únicos
+      };
+    }
 
-        return acc;
-      }, {});
+    // 2. Si no existe el Punto dentro de ese espacio, lo creamos
+    if (!acc[espKey].puntos[idPoc]) {
+      acc[espKey].puntos[idPoc] = {
+        idp: idPoc,
+        fotos: []
+      };
+    }
 
-      return Object.values(agrupado);
-    })
-  );
+    // 3. Agregamos la foto al punto
+    acc[espKey].puntos[idPoc].fotos.push({
+      urlCompleta: `${URL_BASE}${item.path}`,
+      path: item.path, // <--- ESTA LÍNEA TE FALTA
+      ncat: CATALOGO_CAT[item.cat] || `Cat. ${item.cat}`,
+      categoria: item.cat,
+      observacion: item.obs // (Opcional, por si quieres mostrar 'obs' después)
+    });
+
+    return acc;
+  }, {});
+
+  // Convertimos los objetos a arrays para el *ngFor
+  return Object.values(agrupadoPorEsp).map((esp: any) => ({
+    ...esp,
+    puntos: Object.values(esp.puntos)
+  }));
+}))
+  
 }
 }
