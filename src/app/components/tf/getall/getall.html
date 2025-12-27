@@ -15,7 +15,7 @@
            [class.mt-10]="!first" [class.pt-10]="!first" class="border-gray-100">
         
         <div class="mb-6">
-          <h3 class="bg-gray-50 text-[14px] text-emerald-600 font-bold uppercase tracking-widest text-center">
+          <h3 class="bg-gray-50 text-[14px] text-emerald-600 font-bold uppercase tracking-widest text-center py-1">
             {{ espacio.nesp }}
           </h3>
         </div>
@@ -29,11 +29,27 @@
               <h4 class="text-md font-bold text-gray-700">POC: {{ poc.idp }}</h4>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-lg p-2 mb-4 text-center w-24 shadow-sm">
-              <span class="text-lg font-black text-gray-700">
-                {{ contarFotosExistentes(poc.fotos) }} / {{ poc.fotos.length }}
-              </span>
-              <p class="text-[9px] uppercase text-gray-400 font-bold leading-none">Disponibles</p>
+            <div class="w-full mb-5 px-2">
+              <div class="flex justify-between items-center mb-1.5">
+                <span class="text-[9px] font-bold text-gray-400 uppercase">Validación</span>
+                <span class="text-[11px] font-black text-emerald-600">
+                  {{ contarFotosExistentes(poc.fotos) }} / {{ poc.fotos.length }}
+                </span>
+              </div>
+              
+              <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden shadow-inner">
+                <div 
+                  class="h-full rounded-full transition-all duration-700 ease-out"
+                  [class.bg-emerald-500]="calcularPorcentaje(poc.fotos) === 100"
+                  [class.bg-amber-400]="calcularPorcentaje(poc.fotos) < 100"
+                  [style.width.%]="calcularPorcentaje(poc.fotos)">
+                </div>
+              </div>
+              
+              <div class="flex justify-between mt-1">
+                <span class="text-[8px] text-gray-400 italic">Disponibilidad Storage</span>
+                <span class="text-[9px] font-bold text-emerald-600">{{ calcularPorcentaje(poc) }}%</span>
+              </div>
             </div>
 
             <button (click)="abrirGaleria(poc)" 
@@ -41,15 +57,10 @@
               Mostrar Foto
             </button>
             
-            <div class="hidden">
-              <img *ngFor="let f of poc.fotos" [src]="f.urlCompleta" 
-                   (load)="f.existe = true" (error)="f.existe = false">
-            </div>
           </div>
         </div>
 
         <hr *ngIf="!last" class="mt-10 border-gray-100">
-
       </div> 
     </div>
   </div>
@@ -82,7 +93,7 @@
           <div *ngIf="foto.existe === false" class="flex flex-col items-center p-4 text-center">
             <i class="pi pi-image text-gray-300 text-3xl mb-2"></i>
             <span class="text-[10px] text-red-400 font-bold uppercase">No encontrado</span>
-            <p class="text-[8px] text-gray-400 mt-1 uppercase">Error</p>
+            <p class="text-[8px] text-gray-400 mt-1 uppercase">Error en Storage</p>
           </div>
         </div>
         

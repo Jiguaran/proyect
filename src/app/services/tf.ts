@@ -74,7 +74,8 @@ getFotosAgrupadas(id: string, sufijo: string): Observable<any[]> {
       path: item.path, // <--- ESTA LÍNEA TE FALTA
       ncat: CATALOGO_CAT[item.cat] || `Cat. ${item.cat}`,
       categoria: item.cat,
-      observacion: item.obs // (Opcional, por si quieres mostrar 'obs' después)
+      observacion: item.obs, // (Opcional, por si quieres mostrar 'obs' después)
+      existe: true // <--- AGREGAMOS ESTO: Empezamos asumiendo que sí existe
     });
 
     return acc;
@@ -88,6 +89,4 @@ getFotosAgrupadas(id: string, sufijo: string): Observable<any[]> {
 }))
   
 }
-
-
 }
