@@ -20,6 +20,7 @@
           </h3>
         </div>
 
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div *ngFor="let poc of espacio.puntos" 
                class="bg-gray-50 border border-gray-100 rounded-xl p-5 flex flex-col items-center hover:bg-white hover:shadow-md transition-all">
@@ -28,6 +29,10 @@
               <p class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1">Punto de contacto</p>
               <h4 class="text-md font-bold text-gray-700">POC: {{ poc.idp }}</h4>
             </div>
+            <!-- PARTE DE FOTOS existentes -->
+            <span class="text-[11px] font-black text-emerald-600">
+              {{ poc.fotosExistentes }} / {{ poc.totalFotos }}
+            </span>
 
             <div class="w-full mb-5 px-2">
               <div class="flex justify-between items-center mb-1.5">
