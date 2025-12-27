@@ -88,4 +88,6 @@ getFotosAgrupadas(id: string, sufijo: string): Observable<any[]> {
 }))
   
 }
+
+
 }

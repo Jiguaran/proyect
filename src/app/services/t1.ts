@@ -55,9 +55,8 @@
       );
     }
 
-    //funcion para notificar nuevo id de busqueda
 
-  // Modifica tu función getDatoPorTabla para que quede así:
+
   getDatoPorTabla(id: string, sufijo: string): Observable<any> {
     const nombreTabla = `t1_${sufijo}`; 
     
