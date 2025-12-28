@@ -43,38 +43,45 @@ export class T6 {
     );
   } 
   
-getDatoT6(id: string, sufijo: string): Observable<any> {
+getDatoT6(
+  id: string,
+  sufijo: string,
+  espIdSeleccionado?: string
+): Observable<any> {
+
+  // 🔒 MISMA validación que el servicio que sí funciona
   const esSufijoSeguro = /^\d+$/.test(sufijo);
-  if (!esSufijoSeguro) return of({ data: [], error: 'Sufijo no permitido' });
+  if (!esSufijoSeguro) return of({ data: [] });
 
   const nombreTabla = `t6_${sufijo}`;
 
-  return from(
-    this.supabase
-      .from(nombreTabla as any)
-      .select('*')
-      .eq('idencuesta', id.trim())
-  ).pipe(
+  let query = this.supabase
+    .from(nombreTabla as any)
+    .select('*')
+    .eq('idencuesta', id.trim());
+
+  // ✅ ESTE ERA EL FILTRO QUE FALTABA
+if (espIdSeleccionado) {
+  query = query.eq('esp', Number(espIdSeleccionado));
+}
+
+  return from(query).pipe(
     map(({ data, error }: any) => {
       if (error) throw error;
       if (!data || data.length === 0) return { data: [] };
 
       const agrupado = data.reduce((acc: any, fila: any) => {
         const espKey = fila.esp;
-        const nombreEsp = fila.nesp || CATALOGO_ESP[espKey] || `Esp. ${espKey}`;
-        
-        // El POC es la combinación de ESP e ID (o solo ID si es único)
-        const idPoc = `${fila.esp}-${fila.id}`; 
+        const nombreEsp = CATALOGO_ESP[espKey] || `Esp. ${espKey}`;
+        const idPoc = `${fila.esp}-${fila.id}`;
 
         if (!acc[espKey]) {
           acc[espKey] = { titulo: nombreEsp, puntos: {} };
         }
 
-        // Agrupamos categorías dentro del mismo POC
         if (!acc[espKey].puntos[idPoc]) {
           acc[espKey].puntos[idPoc] = {
             idpoc: idPoc,
-            
             numId: fila.id,
             detalles: []
           };
@@ -88,10 +95,9 @@ getDatoT6(id: string, sufijo: string): Observable<any> {
         return acc;
       }, {});
 
-      // Convertimos a Array y ordenamos
       const resultadoFinal = Object.values(agrupado).map((esp: any) => {
-        const puntosArray = Object.values(esp.puntos);
-        puntosArray.sort((a: any, b: any) => Number(a.numId) - Number(b.numId));
+        const puntosArray = Object.values(esp.puntos)
+          .sort((a: any, b: any) => Number(a.numId) - Number(b.numId));
         return { ...esp, puntos: puntosArray };
       });
 
@@ -99,4 +105,7 @@ getDatoT6(id: string, sufijo: string): Observable<any> {
     })
   );
 }
+
+
+
 }

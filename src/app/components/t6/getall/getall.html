@@ -1,4 +1,4 @@
-<div *ngIf="!Loading && listaT6.length > 0">
+<!-- <div *ngIf="!Loading && listaT6.length > 0"> -->
 
    
 
@@ -13,7 +13,7 @@
       <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">
         Seleccionar Espacio
       </span>
-      <!-- <p-cascadeSelect 
+      <p-cascadeSelect 
         [(ngModel)]="espacioSeleccionado" 
         [options]="opcionesEspacios" 
         optionLabel="name" 
@@ -21,7 +21,7 @@
         (onChange)="onEspacioChange($event)"
         panelStyleClass="max-h-[300px] overflow-y-auto" 
         [style]="{'width': '100%', 'max-width': '400px', 'border-radius': '12px'}">
-      </p-cascadeSelect> -->
+      </p-cascadeSelect>
     </div>
 
 
