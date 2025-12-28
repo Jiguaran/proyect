@@ -1,85 +1,101 @@
 <p-toast></p-toast>
 
-<div *ngIf="!Loading; else loadingTemplate" class="max-w-4xl mx-auto p-6">
-
-  <div *ngIf="listaFotos.length > 0" 
-       class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500">
-    
+<div class="max-w-4xl mx-auto p-6">
+  
+  <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500 mb-6">
     <p class="text-xl font-bold text-gray-800 uppercase tracking-tight text-center mb-2">
       Categoría de exhibición
     </p>
-    <hr class="my-6 border-gray-100">
 
-    <div class="max-w-3xl mx-auto">
-      <div *ngFor="let espacio of listaFotos; let first = first; let last = last" 
-           [class.mt-10]="!first" [class.pt-10]="!first" class="border-gray-100">
-        
-        <div class="mb-6">
-          <h3 class="bg-gray-50 text-[14px] text-emerald-600 font-bold uppercase tracking-widest text-center py-1">
-            {{ espacio.nesp }}
-          </h3>
+    <div *ngIf="!Loading && listaFotos.length > 0" class="flex justify-center mb-6">
+      <div class="bg-emerald-50 border-2 border-emerald-500 rounded-2xl p-4 text-center shadow-md min-w-[200px]">
+        <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">
+          Resumen Total del Espacio
+        </p>
+        <div class="flex items-baseline justify-center gap-1">
+          <span class="text-3xl font-black text-gray-800">
+            {{ obtenerResumenEspacio().existentes }}
+          </span>
+          <span class="text-xl font-bold text-gray-400">/</span>
+          <span class="text-xl font-bold text-gray-400">
+            {{ obtenerResumenEspacio().totales }}
+          </span>
         </div>
+        <p class="text-[9px] uppercase text-emerald-500 font-bold mt-1">Fotos Sincronizadas</p>
+      </div>
+    </div>
 
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div *ngFor="let poc of espacio.puntos" 
-               class="bg-gray-50 border border-gray-100 rounded-xl p-5 flex flex-col items-center hover:bg-white hover:shadow-md transition-all">
-            
-            <div class="text-center mb-3">
-              <p class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1">Punto de contacto</p>
-              <h4 class="text-md font-bold text-gray-700">POC: {{ poc.idp }}</h4>
-            </div>
-            <!-- PARTE DE FOTOS existentes -->
-            <div class="bg-white border border-gray-200 rounded-lg p-2 mb-4 text-center w-24 shadow-sm">
-              <span class="text-lg font-black text-gray-700">
-                {{ contarFotosExistentes(poc.fotos) }} / {{ poc.totalFotos }}
-              </span>
-              <p class="text-[9px] uppercase text-gray-400 font-bold leading-none">Disponibles</p>
-
-            </div>
-            <!-- <div class="w-full mb-5 px-2">
-              <div class="flex justify-between items-center mb-1.5">
-                <span class="text-[9px] font-bold text-gray-400 uppercase">Validación</span>
-                <span class="text-[11px] font-black text-emerald-600">
-                  {{ contarFotosExistentes(poc.fotos) }} / {{ poc.fotos.length }}
-                </span>
-              </div>
-              
-              <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden shadow-inner">
-                <div 
-                  class="h-full rounded-full transition-all duration-700 ease-out"
-                  [class.bg-emerald-500]="calcularPorcentaje(poc.fotos) === 100"
-                  [class.bg-amber-400]="calcularPorcentaje(poc.fotos) < 100"
-                  [style.width.%]="calcularPorcentaje(poc.fotos)">
-                </div>
-              </div>
-              
-              <div class="flex justify-between mt-1">
-                <span class="text-[8px] text-gray-400 italic">Disponibilidad Storage</span>
-                <span class="text-[9px] font-bold text-emerald-600">{{ calcularPorcentaje(poc) }}%</span>
-              </div>
-            </div> -->
-
-            <button (click)="abrirGaleria(poc)" 
-                    class="w-full py-2 bg-emerald-600 text-white rounded-lg font-bold text-xs hover:bg-black transition-all shadow-sm">
-              Mostrar Foto
-            </button>
-            
-          </div>
-        </div>
-
-        <hr *ngIf="!last" class="mt-10 border-gray-100">
-      </div> 
+    <div class="flex flex-col items-center justify-center mt-6">
+      <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">
+        Seleccionar Espacio
+      </span>
+      <p-cascadeSelect 
+        [(ngModel)]="espacioSeleccionado" 
+        [options]="opcionesEspacios" 
+        optionLabel="name" 
+        placeholder="Seleccione un Espacio" 
+        (onChange)="onEspacioChange($event)"
+        panelStyleClass="max-h-[300px] overflow-y-auto" 
+        [style]="{'width': '100%', 'max-width': '400px', 'border-radius': '12px'}">
+      </p-cascadeSelect>
     </div>
   </div>
-</div>
 
-<ng-template #loadingTemplate>
-  <div class="flex flex-col items-center justify-center min-h-[300px]">
-    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-500 mb-4"></div>
-    <p class="text-gray-500 font-medium">Cargando reporte...</p>
+  <div *ngIf="!Loading; else loadingTemplate">
+    
+    <div *ngIf="listaFotos.length > 0" class="bg-white rounded-lg shadow-lg p-8">
+      <div class="max-h-[600px] overflow-y-auto pr-2">
+        <div class="max-w-3xl mx-auto">
+          <div *ngFor="let espacio of listaFotos; let first = first; let last = last" 
+               [class.mt-10]="!first" [class.pt-10]="!first">
+            
+            <div class="mb-6">
+              <h3 class="bg-gray-50 text-[14px] text-emerald-600 font-bold uppercase tracking-widest text-center py-1">
+                {{ espacio.nesp }}
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div *ngFor="let poc of espacio.puntos" 
+                   class="bg-gray-50 border border-gray-100 rounded-xl p-5 flex flex-col items-center hover:bg-white hover:shadow-md transition-all">
+                
+                <div class="text-center mb-3">
+                  <p class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1">Punto de contacto</p>
+                  <h4 class="text-md font-bold text-gray-700">POC: {{ poc.idp }}</h4>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-2 mb-4 text-center w-24 shadow-sm">
+                  <span class="text-lg font-black text-gray-700">
+                    {{ contarFotosExistentes(poc.fotos) }} / {{ poc.totalFotos }}
+                  </span>
+                  <p class="text-[9px] uppercase text-gray-400 font-bold leading-none">Disponibles</p>
+                </div>
+
+                <button (click)="abrirGaleria(poc)" 
+                        class="w-full py-2 bg-emerald-600 text-white rounded-lg font-bold text-xs hover:bg-black transition-all shadow-sm">
+                  Mostrar Foto
+                </button>
+              </div>
+            </div>
+            <hr *ngIf="!last" class="mt-10 border-gray-100">
+          </div> 
+        </div>
+      </div> 
+    </div>
+
+    <div *ngIf="listaFotos.length === 0" class="bg-white rounded-xl shadow-xl p-16 border-2 border-dashed border-gray-100 flex flex-col items-center text-center">
+      <div class="bg-red-50 p-6 rounded-full mb-6">
+        <i class="pi pi-exclamation-circle text-red-500 text-6xl animate-pulse"></i>
+      </div>
+      <h2 class="text-2xl font-black text-gray-800 uppercase tracking-tighter mb-2">No se encontraron registros</h2>
+      <p class="text-gray-400 max-w-xs mx-auto text-sm leading-relaxed">
+        El ID de encuesta o el sufijo proporcionado no contienen información en el servidor. 
+        <span class="block mt-2 font-bold text-red-400 uppercase text-[10px]">Error de Sincronización</span>
+      </p>
+    </div>
+
   </div>
-</ng-template>
+</div>
 
 <p-dialog [(visible)]="displayGaleria" 
           [header]="'Fotos POC: ' + pocSeleccionado?.idp" 
@@ -88,12 +104,10 @@
           [breakpoints]="{'960px': '95vw'}">
           
   <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4" *ngIf="pocSeleccionado">
-      
     <div *ngFor="let foto of pocSeleccionado.fotos" 
          class="group border rounded-xl overflow-hidden shadow-sm bg-white transition-all hover:shadow-md flex flex-col">
         
         <div class="overflow-hidden h-44 bg-gray-100 flex items-center justify-center relative">
-          
           <img *ngIf="foto.existe !== false" [src]="foto.urlCompleta" 
                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
                (click)="verImagenFull(foto.urlCompleta)">
@@ -101,22 +115,25 @@
           <div *ngIf="foto.existe === false" class="flex flex-col items-center p-4 text-center">
             <i class="pi pi-image text-gray-300 text-3xl mb-2"></i>
             <span class="text-[10px] text-red-400 font-bold uppercase">No encontrado</span>
-            <p class="text-[8px] text-gray-400 mt-1 uppercase">Error en Storage</p>
           </div>
         </div>
         
         <div class="p-3 bg-gray-50 border-t border-gray-100 mt-auto">
-            <p class="text-[10px] font-bold text-gray-700 mb-1 uppercase tracking-wider">
-              {{ foto.ncat }}
-            </p>
-            
+            <p class="text-[10px] font-bold text-gray-700 mb-1 uppercase tracking-wider">{{ foto.ncat }}</p>
             <div class="mt-2 pt-2 border-t border-gray-200">
-              <p class="text-[9px] font-mono text-gray-400 break-all leading-tight">
-                <span class="font-bold text-gray-500">PATH:</span> {{ foto.path }}
-              </p>
+              <p class="text-[9px] font-mono text-gray-400 break-all leading-tight italic">PATH: {{ foto.path }}</p>
             </div>
         </div>
-
-      </div>
+    </div>
   </div>
 </p-dialog>
+
+<ng-template #loadingTemplate>
+  <div class="flex flex-col items-center justify-center min-h-[400px]">
+    <div class="relative flex items-center justify-center">
+      <div class="animate-ping absolute inline-flex h-16 w-16 rounded-full bg-emerald-400 opacity-20"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-100 border-t-emerald-500 mb-4"></div>
+    </div>
+    <p class="text-emerald-700 font-black text-xs uppercase tracking-[0.2em] mt-4">Sincronizando con Storage...</p>
+  </div>
+</ng-template>
