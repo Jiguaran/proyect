@@ -4,6 +4,8 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { TagModule } from 'primeng/tag';
+import { CascadeSelectModule } from 'primeng/cascadeselect';
+
 
 import { T6 } from '../../../services/t6'; 
 import { T1 } from '../../../services/t1';
@@ -11,7 +13,7 @@ import { T1 } from '../../../services/t1';
 @Component({
   selector: 'app-t6-getall',
   standalone: true,
-  imports: [CommonModule, ButtonModule, ToastModule, TagModule],
+  imports: [CommonModule, ButtonModule, ToastModule, TagModule,CascadeSelectModule],
   templateUrl: './getall.html',
   styleUrl: './getall.css',
   encapsulation: ViewEncapsulation.None,

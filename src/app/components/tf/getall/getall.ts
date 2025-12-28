@@ -43,7 +43,7 @@ export interface Foto {
   providers: [MessageService]
 })
 export class Getall implements OnInit {
-
+  
   listaFotos: any[] = [];
   Loading: boolean = false;
   
