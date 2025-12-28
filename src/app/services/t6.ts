@@ -59,32 +59,43 @@ getDatoT6(id: string, sufijo: string): Observable<any> {
       if (error) throw error;
       if (!data || data.length === 0) return { data: [] };
 
-      // Agrupamos por ESP para crear secciones
-      const agrupadoPorEsp = data.reduce((acc: any, fila: any) => {
-        // Obtenemos los nombres de los catálogos
-        const nombreEsp = CATALOGO_ESP[fila.esp] || `Esp. ${fila.esp}`;
-        const nombreCat = CATALOGO_CAT[fila.cat] || `Cat. ${fila.cat}`;
+      const agrupado = data.reduce((acc: any, fila: any) => {
+        const espKey = fila.esp;
+        const nombreEsp = fila.nesp || CATALOGO_ESP[espKey] || `Esp. ${espKey}`;
+        
+        // El POC es la combinación de ESP e ID (o solo ID si es único)
+        const idPoc = `${fila.esp}-${fila.id}`; 
 
-        // Si no existe el grupo de esta especialidad, lo creamos
-        if (!acc[nombreEsp]) {
-          acc[nombreEsp] = {
-            titulo: nombreEsp,
-            puntos: []
+        if (!acc[espKey]) {
+          acc[espKey] = { titulo: nombreEsp, puntos: {} };
+        }
+
+        // Agrupamos categorías dentro del mismo POC
+        if (!acc[espKey].puntos[idPoc]) {
+          acc[espKey].puntos[idPoc] = {
+            idpoc: idPoc,
+            
+            numId: fila.id,
+            detalles: []
           };
         }
 
-        // Agregamos el registro procesado al grupo
-        acc[nombreEsp].puntos.push({
+        acc[espKey].puntos[idPoc].detalles.push({
           ...fila,
-          ncat: nombreCat,
-          idpoc: fila.id // Siguiendo tu lógica de que id = esp
+          ncat: fila.ncat || CATALOGO_CAT[fila.cat] || `Cat. ${fila.cat}`
         });
 
         return acc;
       }, {});
 
-      // Convertimos el objeto en un array para el *ngFor
-      return { data: Object.values(agrupadoPorEsp) };
+      // Convertimos a Array y ordenamos
+      const resultadoFinal = Object.values(agrupado).map((esp: any) => {
+        const puntosArray = Object.values(esp.puntos);
+        puntosArray.sort((a: any, b: any) => Number(a.numId) - Number(b.numId));
+        return { ...esp, puntos: puntosArray };
+      });
+
+      return { data: resultadoFinal };
     })
   );
 }

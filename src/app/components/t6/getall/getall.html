@@ -1,38 +1,69 @@
-<div *ngIf="!Loading && listaT6.length > 0" class="max-w-2xl mx-auto p-4">
+<p-toast></p-toast>
 
-  <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500">
-    
-    <p class="text-xl font-bold text-gray-800 uppercase tracking-tight text-center">
-      PUNTOS DE CONTACTO
-    </p>
-    
-    <hr class="mt-6 mb-8 border-gray-100">
+<div class="max-w-5xl mx-auto p-4 lg:p-8">
+  
+  <div *ngIf="Loading" class="flex flex-col items-center justify-center min-h-[400px]">
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-100 border-t-emerald-500 mb-4"></div>
+    <p class="text-emerald-700 font-bold animate-pulse">Cargando datos de exhibición...</p>
+  </div>
 
-    <div *ngFor="let grupo of listaT6; let last = last">
+  <div *ngIf="!Loading && listaT6.length > 0">
+    
+    <div *ngFor="let espacio of listaT6" class="mb-10">
       
-      <div class="bg-gray-50 p-4 border-b border-gray-100">
-        <h3 class=" font-bold text-lg text-emerald-600 flex items-center">
-          <i class="pi pi-tag mr-2"></i>
-          {{ grupo.titulo }} <th>:</th>
-        </h3> 
+      <div class="bg-emerald-600 rounded-t-xl py-3 px-6 shadow-md">
+        <h3 class="text-white font-black uppercase tracking-widest text-sm md:text-base flex items-center">
+          <i class="pi pi-map-marker mr-3"></i>
+          {{ espacio.titulo }}
+        </h3>
       </div>
 
-      <div class="p-2">
-        <div *ngFor="let item of grupo.puntos" class="flex items-center p-3 hover:bg-slate-50 border-b last:border-0 border-gray-100">
-          <div class="flex flex-col w-full">
-            <span class="text-xs text-gray-500 font-mono text-left">
-              ID POC: {{ item.idpoc }}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-50 p-6 rounded-b-xl border-x border-b border-gray-200 shadow-sm">
+        
+        <div *ngFor="let punto of espacio.puntos" 
+             class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+          
+          <div class="border-b border-gray-100 pb-3 mb-4">
+            <span class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
+              Punto de Contacto
             </span>
-            <span class="text-xs text-gray-500 font-mono ml-[60%]">
-              Categorias:
-            </span>
-            <span class="text-gray-600 font-medium text-right w-full">
-              {{ item.ncat }}
+            <span class="text-xl font-bold text-gray-800">
+              POC #{{ punto.idpoc.split('-')[1] }}
             </span>
           </div>
-        </div>
-      </div>
 
-      <hr *ngIf="!last" class="my-8 border-gray-100">
+          <div class="flex-grow">
+            <p class="text-[11px] font-bold text-emerald-500 uppercase mb-3 flex items-center">
+              <i class="pi pi-list mr-2"></i>
+              Categorías Registradas
+            </p>
+            
+            <div class="space-y-3">
+              <div *ngFor="let item of punto.detalles" 
+                   class="bg-gray-50 rounded-lg p-3 border-l-4 border-emerald-400 hover:bg-emerald-50 transition-colors">
+                <span class="block text-xs font-bold text-gray-700 leading-tight">
+                  {{ item.ncat }}
+                </span>
+                <span class="text-[9px] font-mono text-gray-400 mt-1 block">
+                  REF ID: {{ item.id }}
+                </span>
+              </div>
+            </div>
+          </div>
 
-    </div> </div> </div>
+        </div> </div>
+    </div>
+  </div>
+
+  <div *ngIf="!Loading && listaT6.length === 0" 
+       class="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-20 text-center flex flex-col items-center">
+    <div class="bg-gray-50 p-6 rounded-full mb-4">
+      <i class="pi pi-search text-gray-300 text-5xl"></i>
+    </div>
+    <h2 class="text-xl font-bold text-gray-800 uppercase tracking-tight">No hay registros</h2>
+    <p class="text-gray-400 text-sm mt-2 max-w-xs">
+      No se encontraron puntos de contacto para los criterios seleccionados.
+    </p>
+  </div>
+
+</div>

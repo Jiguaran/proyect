@@ -1,24 +1,17 @@
-import { Component,ViewEncapsulation,OnInit } from '@angular/core';
-import { TableModule } from 'primeng/table';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { RouterModule } from '@angular/router';
-import { MessageService } from 'primeng/api'; // Dejamos MessageService para mostrar errores de carga
+import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { TagModule } from 'primeng/tag';
 
-//importamos los servicios
 import { T6 } from '../../../services/t6'; 
-import { Database } from '../../../models/supabase';
 import { T1 } from '../../../services/t1';
-
-// Alias para el tipo de fila,
-type T6Row = Database['public']['Tables']['t6_15221']['Row'];
 
 @Component({
   selector: 'app-t6-getall',
   standalone: true,
-  imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule, TagModule],
+  imports: [CommonModule, ButtonModule, ToastModule, TagModule],
   templateUrl: './getall.html',
   styleUrl: './getall.css',
   encapsulation: ViewEncapsulation.None,
@@ -26,56 +19,41 @@ type T6Row = Database['public']['Tables']['t6_15221']['Row'];
 })
 export class Getall implements OnInit {
   
-listaT6: any[] = []; 
+  listaT6: any[] = []; // Aquí guardaremos el array de especialidades
   Loading: boolean = false;
-  datosT6: any = null;
   
   constructor(
-    private t1Service: T1, // Lo usamos solo para ESCUCHAR el botón
-    private t6Service: T6, // Tu servicio
+    private t1Service: T1, 
+    private t6Service: T6, 
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-// 1. Escuchamos al T1 (que es donde está el BehaviorSubject del formulario)
     this.t1Service.busqueda$.subscribe(res => {
-      if (res.id && res.sufijo) {
-        // 2. Cuando el botón se presiona, llamamos al SERVICIO T6
+      if (res && res.id && res.sufijo) {
         this.cargarDatosT6(res.id, res.sufijo);
       }
     });
   }
-  loadData(): void {
-    this.Loading = true;
-    
-    this.t6Service.getAllT6().subscribe({
-      next: (data) => {
-        this.listaT6 = data;
-        this.Loading = false;
-      },
-      error: (error) => {
-        console.error('Error cargando datos T6:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error cargando datos T6'
-        });
-        this.Loading = false;
-      }
-    });
-  }
-cargarDatosT6(id: string, sufijo: string) {
+
+  cargarDatosT6(id: string, sufijo: string) {
     this.Loading = true;
     this.listaT6 = [];
+
     this.t6Service.getDatoT6(id, sufijo).subscribe({
       next: (resultado: any) => {
-        // Ahora resultado.data trae la lista de objetos { titulo: '...', puntos: [...] }
+        // Tu servicio devuelve: { data: [ { titulo, espId, puntos: [...] } ] }
         this.listaT6 = resultado.data || [];
         this.Loading = false;
+        
+        if (this.listaT6.length === 0) {
+          this.messageService.add({ severity: 'warn', summary: 'Sin datos', detail: 'No se encontraron registros para esta búsqueda' });
+        }
       },
       error: (err) => {
-        console.error(err);
+        console.error('Error en T6:', err);
         this.Loading = false;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al conectar con el servidor' });
       }
     });
   }
