@@ -22,7 +22,7 @@
       environment.supabaseUrl,
       environment.supabaseKey
     );
-
+    
     private busquedaSource = new BehaviorSubject<{id: string, sufijo: string}>({id: '', sufijo: ''});
     busqueda$ = this.busquedaSource.asObservable();
 

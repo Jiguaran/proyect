@@ -2,15 +2,32 @@
 
 
 <div class="max-w-2xl mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500"> 
-<div class="max-w-md mx-auto">
-
-    <p class="text-xl font-bold text-gray-800 uppercase tracking-tight text-center">
-        CATEGORIAS
+  <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500 mb-6">
+    
+    <p class="text-xl font-bold text-gray-800 uppercase tracking-tight text-center mb-2">
+      Categorias por Espacio
     </p>
-            
-    <hr class="my-6 border-gray-100">
+      <div class="flex flex-col items-center justify-center mt-6">
+      <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">
+        Seleccionar Espacio
+      </span>
+      <p-cascadeSelect 
+        [(ngModel)]="espacioSeleccionado" 
+        [options]="opcionesEspacios" 
+        optionLabel="espacio" 
+        optionValue="espId"
+        placeholder="Seleccione un Espacio" 
+        (onChange)="onEspacioChange($event)"
+        panelStyleClass="max-h-[300px] overflow-y-auto" 
+        [style]="{'width': '100%', 'max-width': '400px', 'border-radius': '12px'}">
+      </p-cascadeSelect>
+    </div>
 
+
+
+<div class="max-w-2xl mx-auto p-6">
+
+<div class="max-w-md mx-auto">
 <p-table 
     [value]="listaT3"
     [loading]="loading"
@@ -49,3 +66,5 @@
 </p-table>
 
 
+  </div>
+</div>

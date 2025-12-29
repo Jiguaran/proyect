@@ -27,7 +27,9 @@ export class T3 {
   private t3Subject = new BehaviorSubject<Client[]>([]); 
   public t3$ = this.t3Subject.asObservable();
 
-  constructor() {}
+  constructor() {
+
+  }
   
 
   getAllT3(): Observable<Client[]> {
@@ -49,17 +51,17 @@ export class T3 {
   }
 
 getDatoT3(id: string, sufijo: string): Observable<any> {
-  // 1. SEGURIDAD: Validar que el sufijo sea estrictamente numérico
-  const esSufijoSeguro = /^\d+$/.test(sufijo);
 
+  // 1. Seguridad
+  const esSufijoSeguro = /^\d+$/.test(sufijo);
   if (!esSufijoSeguro) {
     console.error('Sufijo inválido:', sufijo);
-    return of({ data: [], error: 'Sufijo no permitido' });
+    return of({ data: [], espacios: [], error: 'Sufijo no permitido' });
   }
 
   const nombreTabla = `t3_${sufijo}`;
 
-  // 2. CONSULTA ÚNICA A T3
+  // 2. Consulta
   return from(
     this.supabase
       .from(nombreTabla as any)
@@ -67,39 +69,58 @@ getDatoT3(id: string, sufijo: string): Observable<any> {
       .eq('idencuesta', id.trim())
   ).pipe(
     map(({ data, error }: any) => {
+
       if (error) {
         console.error('Error Supabase T3:', error);
-        return { data: [], error };
+        return { data: [], espacios: [], error };
       }
 
-      if (!data || data.length === 0) return { data: [] };
+      if (!data || data.length === 0) {
+        return { data: [], espacios: [] };
+      }
 
-      // 3. MAPEO CON CATALOGO_CAT Y CATALOGO_ESP
+      const espaciosMap = new Map<number, string>();
+
+      // 3. Mapeo plano + extracción de espacios
       const datosCombinados = data.map((row3: any) => {
-        // Mapeo para Categoría
+
         const nombreCat = CATALOGO_CAT[row3.cat];
-        
-        // Mapeo para Especialidad (nesp)
         const nombreEsp = CATALOGO_ESP[row3.esp];
+
+        // Guardar espacio único
+        if (!espaciosMap.has(row3.esp)) {
+          espaciosMap.set(
+            row3.esp,
+            nombreEsp && nombreEsp !== ''
+              ? nombreEsp
+              : `Esp. ${row3.esp} no definida`
+          );
+        }
 
         return {
           ...row3,
-          // Validación y asignación de ncat
-          ncat: nombreCat && nombreCat !== '' 
-                ? nombreCat 
-                : `Cat. ${row3.cat} no definida`,
-          
-          // Validación y asignación de nesp
-          nesp: nombreEsp && nombreEsp !== '' 
-                ? nombreEsp 
-                : `Esp. ${row3.esp} no definida`
+          ncat: nombreCat && nombreCat !== ''
+            ? nombreCat
+            : `Cat. ${row3.cat} no definida`,
+          nesp: nombreEsp && nombreEsp !== ''
+            ? nombreEsp
+            : `Esp. ${row3.esp} no definida`
         };
       });
 
-      return { data: datosCombinados };
+      // 4. Espacios ligeros (para select / canal)
+      const espacios = Array.from(espaciosMap.entries()).map(
+        ([espId, espacio]) => ({ espId, espacio })
+      );
+
+      return {
+        data: datosCombinados,   // tabla (si lo necesitas)
+        espacios                // 👈 CLAVE
+      };
     })
   );
 }
+
 }
 
 

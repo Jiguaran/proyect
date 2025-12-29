@@ -7,7 +7,7 @@
   
   <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-emerald-500 mb-6">
     <p class="text-xl font-bold text-gray-800 uppercase tracking-tight text-center mb-2">
-      Exhibición de Fotos por POC
+       Fotos por POC
     </p>
 
     <div *ngIf="!Loading && listaFotos.length > 0" class="flex justify-center mb-6">
@@ -42,43 +42,58 @@
         [style]="{'width': '100%', 'max-width': '400px', 'border-radius': '12px'}">
       </p-cascadeSelect>
     </div>
-  </div>
+  <!-- </div> -->
+
+  <div class="max-w-5xl mx-auto p-4 lg:p-8">
 
   <div *ngIf="!Loading; else loadingTemplate">
     
-    <div *ngIf="listaFotos.length > 0" class="bg-white rounded-lg shadow-lg p-8">
+    <div *ngIf="listaFotos.length > 0" >
       <div class="max-h-[600px] overflow-y-auto pr-2">
         <div class="max-w-3xl mx-auto">
           <div *ngFor="let espacio of listaFotos; let first = first; let last = last" 
                [class.mt-10]="!first" [class.pt-10]="!first">
             
-            <div class="mb-6">
+            <!-- <div class="mb-6">
               <h3 class="bg-gray-50 text-[14px] text-emerald-600 font-bold uppercase tracking-widest text-center py-1">
                 {{ espacio.nesp }}
               </h3>
-            </div>
+            </div> -->
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div *ngFor="let poc of espacio.puntos" 
                    class="bg-gray-50 border border-gray-100 rounded-xl p-5 flex flex-col items-center hover:bg-white hover:shadow-md transition-all">
-                
-                <div class="text-center mb-3">
-                  <p class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1">Punto de contacto</p>
-                  <h4 class="text-md font-bold text-gray-700">POC: {{ poc.idp }}</h4>
-                </div>
+                      <div class="text-center mb-3">
+                        <p class="text-[10px] font-black text-gray-400 uppercase leading-none mb-1">Punto de contacto</p>
+                        <h4 class="text-md font-bold text-gray-700">POC: {{ poc.idp }}</h4>
+                      </div>
 
-                <div class="bg-white border border-gray-200 rounded-lg p-2 mb-4 text-center w-24 shadow-sm">
-                  <span class="text-lg font-black text-gray-700">
-                    {{ contarFotosExistentes(poc.fotos) }} / {{ poc.totalFotos }}
-                  </span>
-                  <p class="text-[9px] uppercase text-gray-400 font-bold leading-none">Disponibles</p>
-                </div>
+      <div class="bg-white border border-gray-200 rounded-lg p-2 mb-4 text-center w-24 shadow-sm">
+        <span class="text-lg font-black text-gray-700">
+          {{ contarFotosExistentes(poc.fotos) }} / {{ poc.totalFotos }}
+        </span>
+        <p class="text-[9px] uppercase text-gray-400 font-bold leading-none">Disponibles</p>
+      </div>
 
-                <button (click)="abrirGaleria(poc)" 
-                        class="w-full py-2 bg-emerald-600 text-white rounded-lg font-bold text-xs hover:bg-black transition-all shadow-sm">
-                  Mostrar Foto
-                </button>
-              </div>
+<div class="w-full mb-4 flex flex-col flex-grow">
+  <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-2 text-center">
+    Categorías Registradas
+  </p>
+  
+  <div class="space-y-1.5 max-h-[120px] overflow-y-auto pr-1 custom-scroll">
+    <div *ngFor="let nombreCat of poc.categoriasUnicas" 
+         class="bg-white border-l-4 border-emerald-400 py-2 px-3 rounded-r-lg shadow-sm">
+      <p class="text-[11px] font-bold text-gray-700 leading-tight">
+        {{ nombreCat }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<button (click)="abrirGaleria(poc)" 
+        class="w-full py-2 bg-emerald-600 text-white rounded-lg font-bold text-xs hover:bg-black transition-all shadow-sm">
+  Mostrar Foto
+</button>              </div>
             </div>
             <hr *ngIf="!last" class="mt-10 border-gray-100">
           </div> 
@@ -106,29 +121,29 @@
           [style]="{width: '60vw'}" 
           [breakpoints]="{'960px': '95vw'}">
           
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4" *ngIf="pocSeleccionado">
-    <div *ngFor="let foto of pocSeleccionado.fotos" 
-         class="group border rounded-xl overflow-hidden shadow-sm bg-white transition-all hover:shadow-md flex flex-col">
-        
-        <div class="overflow-hidden h-44 bg-gray-100 flex items-center justify-center relative">
-          <img *ngIf="foto.existe !== false" [src]="foto.urlCompleta" 
-               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
-               (click)="verImagenFull(foto.urlCompleta)">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4" *ngIf="pocSeleccionado">
+      <div *ngFor="let foto of pocSeleccionado.fotos" 
+          class="group border rounded-xl overflow-hidden shadow-sm bg-white transition-all hover:shadow-md flex flex-col">
+          
+          <div class="overflow-hidden h-44 bg-gray-100 flex items-center justify-center relative">
+            <img *ngIf="foto.existe !== false" [src]="foto.urlCompleta" 
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+                (click)="verImagenFull(foto.urlCompleta)">
 
-          <div *ngIf="foto.existe === false" class="flex flex-col items-center p-4 text-center">
-            <i class="pi pi-image text-gray-300 text-3xl mb-2"></i>
-            <span class="text-[10px] text-red-400 font-bold uppercase">No encontrado</span>
-          </div>
-        </div>
-        
-        <div class="p-3 bg-gray-50 border-t border-gray-100 mt-auto">
-            <p class="text-[10px] font-bold text-gray-700 mb-1 uppercase tracking-wider">{{ foto.ncat }}</p>
-            <div class="mt-2 pt-2 border-t border-gray-200">
-              <p class="text-[9px] font-mono text-gray-400 break-all leading-tight italic">PATH: {{ foto.path }}</p>
+            <div *ngIf="foto.existe === false" class="flex flex-col items-center p-4 text-center">
+              <i class="pi pi-image text-gray-300 text-3xl mb-2"></i>
+              <span class="text-[10px] text-red-400 font-bold uppercase">No encontrado</span>
             </div>
-        </div>
+          </div>
+          
+          <div class="p-3 bg-gray-50 border-t border-gray-100 mt-auto">
+              <p class="text-[10px] font-bold text-gray-700 mb-1 uppercase tracking-wider">{{ foto.ncat }}</p>
+              <div>
+                <p class="text-[9px] font-mono text-gray-400 break-all leading-tight italic"> {{ foto.path }}</p>
+              </div>
+          </div>
+      </div>
     </div>
-  </div>
 </p-dialog>
 
 <ng-template #loadingTemplate>

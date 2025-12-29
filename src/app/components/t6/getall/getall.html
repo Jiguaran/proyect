@@ -1,4 +1,5 @@
 <!-- <div *ngIf="!Loading && listaT6.length > 0"> -->
+<div *ngIf="$any(this).datosBusqueda && !Loading">
 
    
 
@@ -25,8 +26,6 @@
     </div>
 
 
-  </div>
-</div>
 
 
 <div class="max-w-5xl mx-auto p-4 lg:p-8">
@@ -38,51 +37,42 @@
 
   <div *ngIf="!Loading && listaT6.length > 0">
     
-    <div *ngFor="let espacio of listaT6" class="mb-10">
+<div *ngFor="let espacio of listaT6" class="mb-10">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 max-h-[560px] overflow-y-auto">
+    
+    <div *ngFor="let punto of espacio.puntos" 
+         class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col">
       
-      <div class="bg-emerald-600 rounded-t-xl py-3 px-6 shadow-md">
-        <h3 class="text-white font-black uppercase tracking-widest text-sm md:text-base flex items-center">
-          <i class="pi pi-map-marker mr-3"></i>
-          {{ espacio.titulo }}
-        </h3>
+      <div class="border-b border-gray-100 pb-3 mb-4">
+        <span class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
+          Punto de Contacto
+        </span>
+        <span class="text-xl font-bold text-gray-800">
+          POC #{{ punto.idpoc.split('-')[1] }}
+        </span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-50 p-6 rounded-b-xl border-x border-b border-gray-200 shadow-sm">
+      <div class="flex-grow">
+        <p class="text-[11px] font-bold text-emerald-500 uppercase mb-3 flex items-center">
+          <i class="pi pi-list mr-2"></i>
+          Categorías Registradas
+        </p>
         
-        <div *ngFor="let punto of espacio.puntos" 
-             class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col">
-          
-          <div class="border-b border-gray-100 pb-3 mb-4">
-            <span class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
-              Punto de Contacto
+        <div class="space-y-3">
+          <div *ngFor="let item of punto.detalles" 
+               class="bg-gray-50 rounded-lg p-3 border-l-4 border-emerald-400 hover:bg-emerald-50 transition-colors">
+            <span class="block text-xs font-bold text-gray-700 leading-tight">
+              {{ item.ncat }}
             </span>
-            <span class="text-xl font-bold text-gray-800">
-              POC #{{ punto.idpoc.split('-')[1] }}
+            <span class="text-[9px] font-mono text-gray-400 mt-1 block">
+              REF ID: {{ item.id }}
             </span>
           </div>
+        </div>
+      </div>
 
-          <div class="flex-grow">
-            <p class="text-[11px] font-bold text-emerald-500 uppercase mb-3 flex items-center">
-              <i class="pi pi-list mr-2"></i>
-              Categorías Registradas
-            </p>
-            
-            <div class="space-y-3">
-              <div *ngFor="let item of punto.detalles" 
-                   class="bg-gray-50 rounded-lg p-3 border-l-4 border-emerald-400 hover:bg-emerald-50 transition-colors">
-                <span class="block text-xs font-bold text-gray-700 leading-tight">
-                  {{ item.ncat }}
-                </span>
-                <span class="text-[9px] font-mono text-gray-400 mt-1 block">
-                  REF ID: {{ item.id }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-        </div> </div>
-    </div>
-  </div>
+    </div> </div> </div>
 
   <div *ngIf="!Loading && listaT6.length === 0" 
        class="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-20 text-center flex flex-col items-center">
@@ -95,4 +85,7 @@
     </p>
   </div>
 
+</div>
+
+  </div>
 </div>

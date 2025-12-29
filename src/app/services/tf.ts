@@ -38,15 +38,12 @@ getFotosAgrupadas(id: string, sufijo: string, espIdSeleccionado?: string): Obser
     map((response: any) => {
       const rows = response.data || [];
 
-      // 1. Agrupación: Solo se crearán entradas para lo que existe en 'rows'
       const agrupadoPorEsp = rows.reduce((acc: any, item: any) => {
-        const espKey = item.esp; // Usamos el ID tal cual
-        
-        // VALIDACIÓN: Si el ID de espacio no existe en el catálogo o es el ID 9 (vacío), 
-        // podrías decidir si saltarlo o etiquetarlo como 'Otros'.
+        const espKey = item.esp;
         const nombreEspacio = CATALOGO_ESP[espKey];
+        
         if (!nombreEspacio || nombreEspacio.trim() === '') {
-           return acc; // Ignora este registro si no tiene un nombre válido en el catálogo
+           return acc; 
         }
 
         const idPoc = item.idp || 'Sin ID';
@@ -68,7 +65,6 @@ getFotosAgrupadas(id: string, sufijo: string, espIdSeleccionado?: string): Obser
           };
         }
 
-        // Solo agregamos si hay un path (foto real)
         if (item.path) {
           acc[espKey].puntos[idPoc].fotos.push({
             urlCompleta: `${URL_BASE}${item.path}`,
@@ -83,22 +79,36 @@ getFotosAgrupadas(id: string, sufijo: string, espIdSeleccionado?: string): Obser
         return acc;
       }, {});
 
-      // 2. Transformación a Array Final
       return Object.values(agrupadoPorEsp)
         .map((esp: any) => {
           const puntosArray = Object.values(esp.puntos)
-            .map((poc: any) => ({
-              ...poc,
-              totalFotos: poc.fotos.length,
-              fotosExistentes: poc.fotos.length,
-              porcentaje: poc.fotos.length > 0 ? 100 : 0
-            }))
-            // VALIDACIÓN: Solo dejamos puntos que tengan fotos
+            .map((poc: any) => {
+              
+              // --- AQUÍ ESTÁ LA MAGIA PARA LAS CATEGORÍAS ÚNICAS ---
+              // Extraemos solo los nombres de categorías de las fotos y eliminamos duplicados
+              const catsVistas = new Set();
+              const categoriasUnicas = poc.fotos
+                .map((f: any) => f.ncat)
+                .filter((ncat: string) => {
+                  if (!catsVistas.has(ncat)) {
+                    catsVistas.add(ncat);
+                    return true;
+                  }
+                  return false;
+                });
+
+              return {
+                ...poc,
+                categoriasUnicas, // 👈 Nueva propiedad limpia
+                totalFotos: poc.fotos.length,
+                fotosExistentes: poc.fotos.length,
+                porcentaje: poc.fotos.length > 0 ? 100 : 0
+              };
+            })
             .filter((poc: any) => poc.totalFotos > 0);
 
           return { ...esp, puntos: puntosArray };
         })
-        // VALIDACIÓN FINAL: Solo dejamos espacios que terminaron con puntos (y fotos)
         .filter((esp: any) => esp.puntos.length > 0);
     })
   );
