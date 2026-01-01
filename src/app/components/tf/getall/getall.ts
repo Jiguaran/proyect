@@ -38,7 +38,7 @@ export interface Foto {
     CascadeSelectModule
   ],
   templateUrl: './getall.html',
-  styleUrl: './getall.css',
+  styleUrls: ['./getall.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [MessageService]
 })

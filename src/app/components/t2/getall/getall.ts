@@ -20,7 +20,7 @@ type T2WitNesp = T2Row & { nesp?: string };
   standalone : true,
   imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule, TagModule], 
   templateUrl: './getall.html',
-  styleUrl: './getall.css',
+  styleUrls: ['./getall.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [MessageService] 
 })

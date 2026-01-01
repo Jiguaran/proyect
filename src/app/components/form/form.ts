@@ -10,7 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
   imports: [ReactiveFormsModule, CommonModule, ButtonModule, 
     InputTextModule],
   templateUrl: './form.html',
-  styleUrl: './form.css',
+  styleUrls: ['./form.css'],
 })
 export class Form {
   miFormulario: FormGroup;

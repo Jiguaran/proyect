@@ -10,9 +10,10 @@ import {Getall as GF} from "./components/tf/getall/getall";
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet, Form, G1, G2, G3,G6, GF],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
   protected readonly title = signal('front');

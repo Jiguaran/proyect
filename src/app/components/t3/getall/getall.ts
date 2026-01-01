@@ -26,7 +26,7 @@ type T3WitNcat = T3Row & { ncat?: string };
   standalone: true,
   imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule, TagModule, CascadeSelect,FormsModule],
   templateUrl: './getall.html',
-  styleUrl: './getall.css',
+  styleUrls: ['./getall.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [MessageService] 
 })

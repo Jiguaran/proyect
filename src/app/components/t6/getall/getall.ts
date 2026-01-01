@@ -19,7 +19,7 @@ import { T1 } from '../../../services/t1';
   standalone: true,
   imports: [CommonModule, ButtonModule, ToastModule, TagModule,CascadeSelectModule,FormsModule],
   templateUrl: './getall.html',
-  styleUrl: './getall.css',
+  styleUrls: ['./getall.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [MessageService] 
 })

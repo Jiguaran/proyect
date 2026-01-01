@@ -18,14 +18,19 @@ type T1Row = Database['public']['Tables']['t1_15221']['Row'];
 
 @Component({
   selector: 'app-t1-getall',
-  // Quitamos ConfirmDialogModule de los imports
   standalone: true,
-  imports: [TableModule, CommonModule, ButtonModule, RouterModule, ToastModule,InputTextModule], 
+  imports: [
+    TableModule,
+    CommonModule,
+    ButtonModule,
+    RouterModule,
+    ToastModule,
+    InputTextModule
+  ],
   templateUrl: './getall.html',
-  styleUrl: './getall.css',
+  styleUrls: ['./getall.css'], // 👈 AQUÍ
   encapsulation: ViewEncapsulation.None,
-  // Quitamos ConfirmationService de los providers
-  providers: [MessageService] 
+  providers: [MessageService]
 })
 
 export class Getall implements OnInit {
