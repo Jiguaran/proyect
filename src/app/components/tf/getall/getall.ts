@@ -64,43 +64,58 @@ export class Getall implements OnInit {
     private messageService: MessageService
   ) {}
 
-  ngOnInit(): void {
-    // 1. Preparar catálogo para el selector
-    this.opcionesEspacios = Object.entries(CATALOGO_ESP)
-      .filter(([key, value]) => value !== '')
-      .map(([key, value]) => ({ name: value, code: key }));
-
-    // 2. Valor por defecto (Primer espacio del catálogo)
-    if (this.opcionesEspacios.length > 0) {
-      this.espacioSeleccionado = this.opcionesEspacios[0];
-    }
-
-    // 3. Suscripción a la búsqueda inicial
+ngOnInit(): void {
+    // 1. Escuchamos la búsqueda de T1
     this.t1Service.busqueda$.subscribe(res => {
-      if (res.id && res.sufijo) {
+      if (res && res.id && res.sufijo) {
         this.datosBusqueda = res;
-        this.cargarFotos();
-      }else {
-        this.datosBusqueda = null; // Si se limpia la búsqueda, ocultamos todo
+        
+        // 🚀 LLAMADA DINÁMICA: Buscamos qué espacios tienen fotos realmente
+        this.tfService.getEspaciosFotos(res.id, res.sufijo).subscribe({
+          next: (opciones) => {
+            this.opcionesEspacios = opciones;
+
+            if (opciones.length > 0) {
+              // Seleccionamos el primero automáticamente
+              this.espacioSeleccionado = opciones[0];
+              // Cargamos las fotos de ese espacio
+              this.cargarFotos();
+            } else {
+              this.listaFotos = [];
+              this.messageService.add({ 
+                severity: 'warn', 
+                summary: 'Sin Fotos', 
+                detail: 'No se encontraron fotos para esta encuesta.' 
+              });
+            }
+          },
+          error: (err) => console.error('Error al obtener espacios de fotos:', err)
+        });
+
+      } else {
+        this.datosBusqueda = null;
+        this.listaFotos = [];
+        this.opcionesEspacios = [];
+        this.espacioSeleccionado = null;
       }
     });
-
   }
 
   // Carga principal con filtro
 
-  cargarFotos() {
-    if (!this.datosBusqueda) return;
+cargarFotos() {
+    if (!this.datosBusqueda || !this.espacioSeleccionado) return;
 
     this.Loading = true;
     const { id, sufijo } = this.datosBusqueda;
-    const espId = this.espacioSeleccionado?.code;
+    
+    // 🔑 IMPORTANTE: Usamos el .code que viene del objeto seleccionado
+    const espId = this.espacioSeleccionado.code;
 
     this.tfService.getFotosAgrupadas(id, sufijo, espId).subscribe({
       next: (data: any[]) => {
         this.listaFotos = data; 
         this.Loading = false;
-        // Lanzamos tu validación de existencia en Storage
         this.validarExistenciaGlobal();
       },
       error: (err) => {
@@ -109,10 +124,10 @@ export class Getall implements OnInit {
       }
     });
   }
-  
 
-  // Evento al cambiar el CascadeSelect
   onEspacioChange(event: any) {
+    // PrimeNG CascadeSelect devuelve el objeto completo en la selección
+    // Al cambiar, simplemente recargamos
     this.cargarFotos();
   }
 

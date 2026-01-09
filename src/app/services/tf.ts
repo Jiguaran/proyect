@@ -114,6 +114,36 @@ getFotosAgrupadas(id: string, sufijo: string, espIdSeleccionado?: string): Obser
   );
 }
 
+getEspaciosFotos(id: string, sufijo: string): Observable<any[]> {
+  // 1. Cambiamos a tf_
+  const nombreTabla = `tf_${sufijo}`;
+  
+  return from(
+    this.supabase
+      .from(nombreTabla as any)
+      .select('esp')
+      .eq('idencuesta', id.trim())
+  ).pipe(
+    map(({ data, error }: any) => {
+      if (error || !data) return [];
+      
+      // 2. Misma lógica de IDs únicos
+      const idsUnicos = [...new Set(data.map((item: any) => item.esp))];
+      
+      return idsUnicos.map(espId => {
+        const catalogo = CATALOGO_ESP as Record<string | number, string>;
+        
+        // Buscamos el nombre en el catálogo igual que antes
+        const nombreEspacio = catalogo[espId as any] || `Espacio ${espId}`;
 
+        return {
+          name: nombreEspacio,
+          code: espId?.toString(),
+          esp: espId 
+        };
+      });
+    })
+  );
+}
 
 }

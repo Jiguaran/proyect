@@ -6,7 +6,7 @@ import { ToastModule } from 'primeng/toast';
 import { TagModule } from 'primeng/tag';
 import { CascadeSelectModule } from 'primeng/cascadeselect';
 import { FormsModule } from '@angular/forms'; 
-
+import { EspacioStateService } from '../../../core/state/espacio-state'; // Ajusta la ruta según tu proyecto
 
 import { CATALOGO_ESP } from '../../../core/constants/encuestas.constants';
 
@@ -37,32 +37,53 @@ export class Getall implements OnInit {
   constructor(
     private t1Service: T1, 
     private t6Service: T6, 
-    private messageService: MessageService
+    private messageService: MessageService,
+    private espacioState: EspacioStateService // 👈 ESTA ES LA LÍNEA QUE FALTA
   ) {}
 
-  ngOnInit(): void {
+ngOnInit(): void {
+  // 1. Mantenemos el catálogo estático como "Plan B" o base inicial
+  const opcionesBase = Object.entries(CATALOGO_ESP)
+    .filter(([key, value]) => value !== '')
+    .map(([key, value]) => ({ name: value, code: key }));
 
-    this.opcionesEspacios = Object.entries(CATALOGO_ESP)
-      .filter(([key, value]) => value !== '')
-      .map(([key, value]) => ({ name: value, code: key }));
+  // 2. Escuchamos la búsqueda de T1
+  this.t1Service.busqueda$.subscribe(res => {
+    if (res && res.id && res.sufijo) {
+      this.datosBusqueda = res;
 
-    // 2. Valor por defecto (Primer espacio del catálogo)
-    if (this.opcionesEspacios.length > 0) {
-      this.espacioSeleccionado = this.opcionesEspacios[0];
+      // 🚀 PASO CLAVE: Antes de cargar la tabla, descubrimos los espacios reales
+      this.t6Service.getEspaciosDisponibles(res.id, res.sufijo).subscribe({
+        next: (opcionesReales) => {
+          if (opcionesReales.length > 0) {
+            // A. Usamos lo que encontramos en la base de datos
+            this.opcionesEspacios = opcionesReales;
+            
+            // B. ¡COMPARTIMOS! Mandamos estos grupos al componente TF
+            this.espacioState.setListaCompartida(opcionesReales);
+            
+            // C. Seleccionamos el primero y cargamos la tabla pesada
+            this.espacioSeleccionado = opcionesReales[0];
+            this.cargarDatosT6();
+          } else {
+            // Si no hay nada en la DB, podemos usar los estáticos o mostrar error
+            this.opcionesEspacios = opcionesBase;
+            this.messageService.add({ severity: 'warn', summary: 'Atención', detail: 'No se detectaron espacios en la base de datos' });
+          }
+        },
+        error: () => {
+          this.opcionesEspacios = opcionesBase;
+          this.cargarDatosT6();
+        }
+      });
+
+    } else {
+      this.datosBusqueda = null;
+      this.listaT6 = [];
+      this.opcionesEspacios = opcionesBase;
     }
-
-
-this.t1Service.busqueda$.subscribe(res => {
-  if (res && res.id && res.sufijo) {
-    this.datosBusqueda = res;
-    this.cargarDatosT6();
-  } else {
-    this.datosBusqueda = null;
-    this.listaT6 = [];
-  }
-});
-
-  }
+  });
+}
   
 onEspacioChange(event: any) {
   this.cargarDatosT6();

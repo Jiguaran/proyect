@@ -106,6 +106,40 @@ if (espIdSeleccionado) {
   );
 }
 
+// En tu servicio T6
+getEspaciosDisponibles(id: string, sufijo: string): Observable<any[]> {
+  const nombreTabla = `t6_${sufijo}`;
+  
+  return from(
+    this.supabase
+      .from(nombreTabla as any)
+      .select('esp')
+      .eq('idencuesta', id.trim())
+  ).pipe(
+    map(({ data, error }: any) => {
+      if (error || !data) return [];
+      
+      // 1. Extraemos los IDs y aseguramos que sean números
+      const idsUnicos = [...new Set(data.map((item: any) => item.esp))];
+      
+      // 2. Mapeamos al formato de CascadeSelect
+      return idsUnicos.map(espId => {
+        // 🔑 SOLUCIÓN: Forzamos el tipo del catálogo para que acepte cualquier número o string como llave
+        const catalogo = CATALOGO_ESP as Record<string | number, string>;
+        
+        // Usamos una constante con nombre distinto para evitar confusión con el 'id' de la función
+        const nombreEspacio = catalogo[espId as number] || `Espacio ${espId}`;
+
+        return {
+          name: nombreEspacio,
+          code: espId?.toString(),
+          esp: espId // Guardamos el valor original por si lo necesitas
+        };
+      });
+    })
+  );
+}
+
 
 
 }

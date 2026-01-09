@@ -2,23 +2,31 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root' // 👈 GLOBAL, UNA SOLA INSTANCIA
+  providedIn: 'root'
 })
 export class EspacioStateService {
 
-  // null = ningún espacio seleccionado
+  // 1. Para el ID seleccionado (lo que ya tenías)
   private espacioSubject = new BehaviorSubject<number | null>(null);
-
-  // Observable público (solo lectura)
   espacio$ = this.espacioSubject.asObservable();
 
-  // Emitir nuevo espacio
+  // 2. NUEVO: El "almacén" para el array de objetos que quieres compartir
+  private listaOpcionesSubject = new BehaviorSubject<any[]>([]);
+  listaOpciones$ = this.listaOpcionesSubject.asObservable();
+
+  // Emitir nuevo espacio (ID)
   setEspacio(espId: number | null) {
     this.espacioSubject.next(espId);
   }
 
-  // Limpiar selección
+  // 🚀 LA FUNCIÓN QUE TE FALTA: Para guardar la lista que viene de T6
+  setListaCompartida(lista: any[]) {
+    this.listaOpcionesSubject.next(lista);
+  }
+
+  // Limpiar todo
   clear() {
     this.espacioSubject.next(null);
+    this.listaOpcionesSubject.next([]);
   }
 }
